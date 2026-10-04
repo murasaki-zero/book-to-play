@@ -898,7 +898,7 @@
     <section class="shelf-section">
       <div class="shelf-section-title">02 · 本地书库藏书与扩展书目</div>
 
-      <div class="books-grid">
+      <div class="books-grid" id="shelf-books-grid-2">
         <!-- Book 3: 236 Game Design Tips -->
         <article class="book-card" id="card-tips236">
           <div class="book-showcase">
@@ -1205,6 +1205,66 @@
       });
     }
 
+    function openDynamicPipeline(book) {
+      const isMemoir = book.workflow === 'memoir';
+      const title = book.title;
+      const cmd = book.commandPrompt;
+
+      document.querySelector('#pipeline-modal-title').textContent = `《${title}》· 制作流水线`;
+      const contentEl = document.querySelector('#pipeline-modal-content');
+
+      const steps = isMemoir ? [
+        { name: "本地原始 EPUB / 文本提取", status: "done", desc: "已放置于 Book/ 目录，格式就绪" },
+        { name: "自然段长文精读切分与 JSON 结构化", status: "current", desc: "严格保留完整自然段落，禁止切为碎片选择题" },
+        { name: "时代背景坐标仓 (Era Capsule) 与人物档案", status: "waiting", desc: "梳理年份环境、危机处境与关键同侪档案" },
+        { name: "情境决策与性格特质思辨沙盒", status: "waiting", desc: "在历史转折点挂载双向真实反馈互动" },
+        { name: "幕后历史逸事与单文件构建", status: "waiting", desc: "收录业界逸闻并构建自包含离线单文件" }
+      ] : [
+        { name: "本地原书 PDF / EPUB 检索与 OCR", status: "done", desc: "已放置于 Book/ 目录，格式就绪" },
+        { name: "章节 4 单元微课拆解与概念提取", status: "current", desc: "按照《制作工作流.md》提炼设计透镜与知识脉络" },
+        { name: "参数化机制实验与规则沙盒编写", status: "waiting", desc: "围绕核心机制编写真实数值/逻辑模拟器" },
+        { name: "章节实战作品设计与自评量表", status: "waiting", desc: "设计真实游戏提案模板与练习要点" },
+        { name: "单文件打包与全量自动化校验", status: "waiting", desc: "生成独立 HTML 并运行全量单元测试" }
+      ];
+
+      contentEl.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span>适用工作流：<strong>${isMemoir ? '📜 传记类制作工作流' : '🎲 方法论设计工作流'}</strong></span>
+            <span style="color:var(--accent-orange); font-family:var(--font-mono);">随时可开工</span>
+          </div>
+          <div class="progress-bar-bg" style="height:10px;">
+            <div class="progress-bar-fill pipeline-pulse" style="width:20%; background:var(--accent-orange);"></div>
+          </div>
+        </div>
+
+        <div class="pipeline-track">
+          ${steps.map((s, idx) => `
+            <div class="pipeline-step ${s.status}">
+              <div class="pipeline-step-badge">${s.status === 'done' ? '✓ 就绪' : s.status === 'current' ? '▶ 下一步' : '排队中'}</div>
+              <div class="pipeline-step-text">
+                <strong>0${idx + 1} · ${s.name}</strong>
+                <span>${s.desc}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pipeline-launch-box">
+          <h4>✦ 如何立即启动并让 AI 助手开工？</h4>
+          <p style="font-size:13px; color:var(--ink-dim); margin-top:4px;">
+            点击下方【复制开工指令】，发送给会话中的 AI 助手，将严格按照对应工作流为您制作！
+          </p>
+          <div class="pipeline-command-row">
+            <input class="pipeline-command-code" readonly value="${cmd}">
+            <button class="btn-sub" style="color:var(--accent-blue); border-color:var(--accent-blue);" onclick="copyCommand('${cmd.replace(/'/g, "\\'")}')">复制指令</button>
+          </div>
+        </div>
+      `;
+
+      document.querySelector('#pipeline-dialog').showModal();
+    }
+
     // Git commit history data
     const GIT_COMMITS = [
       {
@@ -1348,6 +1408,110 @@
       } catch (err) {
         console.warn('读取岩田先生进度失败', err);
       }
+
+      // Dynamic scan of Book/ directory to discover newly added books
+      (async function scanAndRenderBooks() {
+        try {
+          const res = await fetch('/api/books');
+          if (!res.ok) return;
+          const data = await res.json();
+          const books = data.books || [];
+          if (books.length === 0) return;
+
+          // Update header stats
+          const statBooksEl = document.querySelector('#stat-books-count');
+          if (statBooksEl) statBooksEl.textContent = books.length;
+
+          // Filter for custom / new books (exclude Schell, Iwata, LevelUp, Tips236 which already have hardcoded cards)
+          const newBooks = books.filter(b => b.status === 'new');
+          if (newBooks.length === 0) return;
+
+          const grid2 = document.querySelector('#shelf-books-grid-2');
+          const reserveSlot = grid2.querySelector('.book-card.slot');
+
+          newBooks.forEach(book => {
+            const card = document.createElement('article');
+            card.className = 'book-card';
+            card.id = `card-custom-${encodeURIComponent(book.title).slice(0, 10)}`;
+
+            const isMemoir = book.workflow === 'memoir';
+            const iconBadge = isMemoir ? '📖 传记思辨' : '🎲 系统研读';
+            const pillStyle = isMemoir 
+              ? 'background:rgba(56,189,248,0.15); border-color:var(--accent-blue); color:#38bdf8;'
+              : 'background:rgba(251,191,36,0.15); border-color:#fbbf24; color:#fbbf24;';
+
+            const coverImgHtml = book.cover ? `
+              <div class="book-cover-wrap">
+                <img src="${book.cover}" alt="${book.title}封面" onerror="this.parentElement.innerHTML='<div style=\\'font-size:36px; display:grid; place-items:center; width:100%; height:100%;\\'>${isMemoir ? '📜' : '📘'}</div>'">
+              </div>
+            ` : `
+              <div class="book-cover-wrap" style="display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+                <div style="font-size:36px; color:var(--ink-muted); text-align:center;">
+                  ${isMemoir ? '📜' : '📘'}
+                </div>
+              </div>
+            `;
+
+            card.innerHTML = `
+              <div class="book-showcase">
+                ${coverImgHtml}
+
+                <div class="book-details">
+                  <div>
+                    <div class="book-badge-row">
+                      <span class="status-pill" style="${pillStyle}">${iconBadge}</span>
+                      <span class="status-pill plan">新入库原书</span>
+                    </div>
+                    <h3 class="book-title-main" title="${book.title}" style="font-size:clamp(16px, 1.8vw, 19px); line-height:1.4;">${book.title}</h3>
+                    <p class="book-subinfo" style="font-family:var(--font-mono); font-size:11px;">${book.filename}</p>
+                  </div>
+
+                  <div class="book-spec-grid">
+                    <div class="book-spec-item">
+                      <div class="val">${book.spec.format || 'EPUB'}</div>
+                      <div class="lbl">文件格式</div>
+                    </div>
+                    <div class="book-spec-item">
+                      <div class="val">${book.spec.size || '本地'}</div>
+                      <div class="lbl">文件大小</div>
+                    </div>
+                    <div class="book-spec-item">
+                      <div class="val">${isMemoir ? '传记' : '设计'}</div>
+                      <div class="lbl">${book.workflowName}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="book-card-body">
+                <div class="progress-section">
+                  <div class="progress-header">
+                    <span>状态：已放入 Book/ 目录</span>
+                    <strong style="color:var(--accent-orange); font-family:var(--font-mono);">待开工</strong>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 10%; background:var(--accent-orange);"></div>
+                  </div>
+                </div>
+
+                <div class="btn-action-group">
+                  <button class="btn-sub" style="width:100%; text-align:center; color:var(--accent-orange); border-color:var(--accent-orange);" onclick="openDynamicPipeline(${JSON.stringify(book).replace(/"/g, '&quot;')})">
+                    按《${isMemoir ? '传记类工作流' : '制作工作流'}》发起制作 ↗
+                  </button>
+                </div>
+              </div>
+            `;
+
+            if (reserveSlot) {
+              grid2.insertBefore(card, reserveSlot);
+            } else {
+              grid2.appendChild(card);
+            }
+          });
+        } catch (err) {
+          console.warn('动态扫描 Book 目录失败', err);
+        }
+      })();
     })();
 
     // LAN / Mobile Dialog handler

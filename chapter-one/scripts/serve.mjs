@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -8,6 +8,8 @@ const distRoot = path.resolve(fileURLToPath(new URL('../dist/', import.meta.url)
 const port = Number(process.env.PORT || 4173);
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.json': 'application/json; charset=utf-8' };
 import os from 'node:os';
+import crypto from 'node:crypto';
+import { execSync } from 'node:child_process';
 
 function getLanIps() {
   const ips = [];
@@ -22,6 +24,119 @@ function getLanIps() {
     }
   }
   return ips;
+}
+
+// Parse book metadata from filename and determine workflow
+function parseBookMeta(filename, stats) {
+  const ext = path.extname(filename).toLowerCase();
+  const cleanName = filename.replace(/\.[^/.]+$/, '');
+  // Clean noisy strings
+  let title = cleanName
+    .replace(/\s*\(Z-Library\).*/i, '')
+    .replace(/\s*\(z-library\.sk.*\)/i, '')
+    .replace(/\s*\(1lib\.sk.*\)/i, '')
+    .replace(/\s*\(.*?\)/g, '')
+    .replace(/\s*\[.*?\]/g, '')
+    .replace(/\s*【.*?】/g, '')
+    .replace(/=\s*[^=]+$/, '')
+    .trim();
+
+  if (!title) title = cleanName;
+
+  // Workflow classification rule:
+  // Biography/Memoir keywords
+  const bioKeywords = ['传', '传记', '自传', '回忆录', '如是说', '先生', '访谈', '生平', '生父', 'Jobs', 'Musk', 'Iwata'];
+  const isBiography = bioKeywords.some(kw => cleanName.includes(kw));
+
+  // Recognized active projects
+  let status = 'idle'; // idle | in_progress | ready
+  let projectUrl = null;
+  let cover = null;
+  let spec = {};
+
+  if (title.includes('游戏设计艺术')) {
+    status = 'ready';
+    title = '游戏设计艺术（第 2 版）';
+    projectUrl = 'chapter-one/dist/开始学习.html';
+    cover = 'chapter-one/dist/assets/covers/schell-art-of-game-design.jpg';
+    spec = { chapters: 34, units: 136, tag: '设计透镜' };
+  } else if (title.includes('岩田先生')) {
+    status = 'ready';
+    title = '岩田先生';
+    projectUrl = 'book-iwata/dist/开始思辨.html';
+    cover = 'chapter-one/dist/assets/covers/mr-iwata.jpg';
+    spec = { chapters: 7, units: 58, tag: '决策重演' };
+  } else if (title.includes('通关！游戏设计之道') || title.includes('通关')) {
+    status = 'plan';
+    title = '通关！游戏设计之道（第 2 版）';
+    cover = 'chapter-one/dist/assets/covers/level-up-rogers.jpg';
+    spec = { chapters: 18, units: '待开工', tag: '关卡设计' };
+  } else if (title.includes('236个技巧')) {
+    status = 'plan';
+    title = '游戏设计的236个技巧';
+    cover = 'chapter-one/dist/assets/covers/game-design-236-tips.jpg';
+    spec = { chapters: 236, units: '诀窍库', tag: '手感微调' };
+  } else {
+    // Newly added custom books
+    status = 'new';
+    spec = {
+      format: ext.replace('.', '').toUpperCase(),
+      size: (stats.size / 1024 / 1024).toFixed(1) + ' MB',
+      tag: isBiography ? '传记思辨' : '系统研读'
+    };
+
+    // Check cached cover
+    const hash = crypto.createHash('md5').update(filename).digest('hex').slice(0, 12);
+    cover = `chapter-one/dist/assets/covers/cache/cover-${hash}.jpg`;
+  }
+
+  return {
+    filename,
+    title,
+    rawName: filename,
+    ext,
+    size: stats.size,
+    mtime: stats.mtime,
+    isBiography,
+    workflow: isBiography ? 'memoir' : 'methodology',
+    workflowName: isBiography ? '传记类思辨工作流' : '方法论设计工作流',
+    status,
+    projectUrl,
+    cover,
+    spec,
+    commandPrompt: isBiography 
+      ? `开始按照《传记类制作工作流.md》制作《${title}》的思辨精读练习室`
+      : `开始制作《${title}》互动练习室`
+  };
+}
+
+async function scanBookDirectory() {
+  const bookDir = path.resolve(root, 'Book');
+  try {
+    // Attempt extracting any missing covers
+    try {
+      execSync(`python3 "${path.resolve(root, 'chapter-one/scripts/extract_covers.py')}" "${root}"`, { stdio: 'ignore' });
+    } catch (_) {}
+
+    const files = await readdir(bookDir);
+    const validFiles = files.filter(f => !f.startsWith('.') && ['.epub', '.pdf'].includes(path.extname(f).toLowerCase()));
+    const results = [];
+    for (const f of validFiles) {
+      try {
+        const s = await stat(path.resolve(bookDir, f));
+        results.push(parseBookMeta(f, s));
+      } catch (_) {}
+    }
+    // Sort: ready books first, then recognized plan, then newly added books
+    results.sort((a, b) => {
+      const order = { ready: 0, plan: 1, in_progress: 2, new: 3 };
+      return (order[a.status] ?? 4) - (order[b.status] ?? 4);
+    });
+    return results;
+  } catch (err) {
+    console.warn('扫描 Book 目录失败', err);
+    return [];
+  }
 }
 
 const server = http.createServer(async (req, res) => {
@@ -45,6 +160,14 @@ const server = http.createServer(async (req, res) => {
       const lanIps = getLanIps();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ status: 'running', port, lanIps }));
+      return;
+    }
+
+    // API endpoint to scan Book/ directory and return books list
+    if (rawName === '/api/books') {
+      const books = await scanBookDirectory();
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify({ total: books.length, books }));
       return;
     }
 
