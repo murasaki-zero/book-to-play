@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>百年孤独 · 时代背景与隐喻精读室</title>
+  <link rel="icon" type="image/svg+xml" href="../../chapter-one/dist/assets/favicon.svg">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-surface: #161b22;
+      --bg-card: #21262d;
+      --border: #30363d;
+      --ink: #e6edf3;
+      --ink-dim: #8b949e;
+      --ink-muted: #6e7681;
+      --accent-purple: #c084fc;
+      --accent-purple-soft: rgba(192, 132, 252, 0.12);
+      --accent-gold: #fbbf24;
+      --accent-gold-soft: rgba(251, 191, 36, 0.12);
+      --accent-rose: #f43f5e;
+      --accent-green: #34d399;
+      --font-serif: "Songti SC", "Noto Serif SC", STSong, "Source Han Serif SC", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(22, 27, 34, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-back-shelf {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--ink-dim);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-back-shelf:hover {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--ink-dim);
+    }
+
+    .book-title-tag {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-purple);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tool-btn:hover {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+    }
+
+    /* Main Layout */
+    .workspace {
+      display: flex;
+      flex: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Sidebar Chapter Nav */
+    .sidebar-nav {
+      width: 280px;
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-title {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+
+    .nav-ch-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--ink-dim);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .nav-ch-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+    }
+    .nav-ch-btn.active {
+      background: var(--accent-purple-soft);
+      border-color: rgba(192, 132, 252, 0.35);
+      color: var(--accent-purple);
+    }
+    .nav-ch-btn .ch-num {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-purple);
+    }
+    .nav-ch-btn .ch-name {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Reading Canvas */
+    .reading-canvas {
+      flex: 1;
+      padding: 40px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Chapter Header Banner */
+    .chapter-banner {
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+    }
+    .chapter-banner h1 {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .chapter-banner .meta-info {
+      font-size: 13px;
+      font-family: var(--font-mono);
+      color: var(--accent-purple);
+    }
+
+    /* Era Capsule (时空坐标仓) */
+    .era-capsule {
+      background: var(--bg-surface);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 36px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .era-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .era-tag {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-purple);
+      letter-spacing: 0.05em;
+    }
+    .era-scale {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--ink-dim);
+    }
+    .era-geo {
+      font-size: 13px;
+      color: var(--ink);
+      margin-bottom: 16px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+    }
+    .era-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .era-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .era-box h4 {
+      font-size: 13px;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+    .era-box p {
+      font-size: 13px;
+      color: var(--ink-dim);
+      line-height: 1.7;
+    }
+
+    /* Character Chips Row */
+    .char-chips-bar {
+      margin-bottom: 32px;
+    }
+    .char-chips-header {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .char-chips-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .char-chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .char-chip:hover {
+      border-color: var(--accent-purple);
+      background: var(--accent-purple-soft);
+    }
+    .char-chip .char-name {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .char-chip .char-badge {
+      font-size: 11px;
+      color: var(--ink-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    /* Paragraphs Stream (自然段长文精读) */
+    .paragraphs-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .par-block {
+      position: relative;
+      padding-left: 28px;
+    }
+    .par-num {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      opacity: 0.6;
+    }
+    .par-content {
+      font-family: var(--font-serif);
+      line-height: 1.95;
+      color: #e2e8f0;
+      text-align: justify;
+      word-break: break-word;
+      letter-spacing: 0.02em;
+    }
+
+    /* Metaphor Badge in text */
+    .metaphor-badge {
+      display: inline-block;
+      margin: 0 4px;
+      padding: 1px 7px;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      color: var(--accent-purple);
+      background: rgba(192, 132, 252, 0.15);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      vertical-align: baseline;
+    }
+    .metaphor-badge:hover {
+      background: var(--accent-purple);
+      color: #121820;
+    }
+
+    /* Reader Reflection Section */
+    .reflection-section {
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .reflection-title {
+      font-size: 16px;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .reflection-textarea {
+      width: 100%;
+      height: 140px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: var(--ink);
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .reflection-textarea:focus {
+      border-color: var(--accent-purple);
+    }
+
+    /* Lineage Drawer (家族谱系抽屉) */
+    .lineage-drawer {
+      position: fixed;
+      top: 0;
+      right: -600px;
+      width: 580px;
+      max-width: 90vw;
+      height: 100vh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border);
+      z-index: 100;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.6);
+      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .lineage-drawer.open {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-body {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .tree-root-box {
+      background: var(--bg-card);
+      border: 1px solid var(--accent-purple);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .tree-couple {
+      font-size: 16px;
+      color: var(--accent-purple);
+      margin-bottom: 6px;
+    }
+    .tree-note {
+      font-size: 12px;
+      color: var(--ink-dim);
+    }
+    .tree-branch-connector {
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      margin: 14px 0;
+    }
+    .tree-children-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .tree-child-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 17px;
+      color: var(--ink);
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--ink-dim);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .modal-char-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .status-pill {
+      font-size: 11px;
+      background: rgba(192, 132, 252, 0.15);
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-purple);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .char-badge-lg {
+      font-size: 12px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 860px) {
+      .workspace {
+        flex-direction: column;
+      }
+      .sidebar-nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .reading-canvas {
+        padding: 24px 20px;
+      }
+      .era-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="top-bar">
+    <div class="brand-section">
+      <a href="../../index.html" class="btn-back-shelf">
+        <span>← 返回我的书架</span>
+      </a>
+      <div class="book-title-tag">
+        <span>🏛️ 《百年孤独》· 文学社科时代精读室</span>
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <button class="tool-btn" id="btn-open-lineage" title="展开布恩迪亚家族复杂谱系树">
+        <span>🌳 家族谱系仓</span>
+      </button>
+      <div style="display:flex; align-items:center; gap:4px; margin-left:8px;">
+        <button class="tool-btn" id="btn-font-minus" title="调小字号">A-</button>
+        <button class="tool-btn" id="btn-font-plus" title="调大字号">A+</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace -->
+  <div class="workspace">
+    <!-- Sidebar Chapter Navigation -->
+    <aside class="sidebar-nav">
+      <div class="sidebar-title">全书精读导览（前 3 章示例）</div>
+      <div id="chapter-nav-list"></div>
+    </aside>
+
+    <!-- Reading Canvas -->
+    <main class="reading-canvas">
+      <!-- Chapter Title Banner -->
+      <div class="chapter-banner">
+        <h1 id="current-chapter-title">第一章：马孔多的创世与吉卜赛人的奇物</h1>
+        <div class="meta-info" id="current-chapter-meta">完整自然段收录 · 时代与现实映射</div>
+      </div>
+
+      <!-- Spatiotemporal Era Matrix Capsule -->
+      <section class="era-capsule" id="era-capsule-content">
+        <!-- Injected via app.js -->
+      </section>
+
+      <!-- Active Characters Row -->
+      <section class="char-chips-bar">
+        <div class="char-chips-header">
+          <span>本章登场人物（点击展开人物小传与命运伏笔）</span>
+          <span style="color:var(--accent-purple);">世代图谱已关联</span>
+        </div>
+        <div class="char-chips-list" id="character-chips-list">
+          <!-- Injected via app.js -->
+        </div>
+      </section>
+
+      <!-- Paragraphs Reading Stream -->
+      <section class="paragraphs-stream" id="paragraphs-stream">
+        <!-- Injected via app.js -->
+      </section>
+
+      <!-- Reader Reflection / Margin Notes -->
+      <section class="reflection-section">
+        <div class="reflection-title">
+          <span>✍️ 本章个人札记与沉浸批注</span>
+          <span id="reflection-save-status" style="font-size:12px; font-family:var(--font-mono); color:var(--ink-muted);">已保存于本地</span>
+        </div>
+        <textarea class="reflection-textarea" id="chapter-reflection-input" placeholder="在此记录你对本章拉美现实隐喻、家族宿命或魔幻叙事的思考与札记（本地自动保存）..."></textarea>
+      </section>
+    </main>
+  </div>
+
+  <!-- Lineage Drawer -->
+  <div class="lineage-drawer" id="lineage-drawer">
+    <div class="drawer-header">
+      <h3 style="font-size:17px; color:var(--accent-purple);">🌳 布恩迪亚家族世代谱系树</h3>
+      <button class="modal-close" id="btn-close-lineage">✕</button>
+    </div>
+    <div class="drawer-body" id="lineage-tree-container">
+      <!-- Injected via app.js -->
+    </div>
+  </div>
+
+  <!-- Character Detail Modal -->
+  <div class="modal-overlay" id="char-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>人物档案与宿命</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="char-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Metaphor / Allegory Modal -->
+  <div class="modal-overlay" id="metaphor-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="metaphor-modal-title">现实隐喻与历史互文</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="metaphor-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="chapters.js"></script>
+  <script src="context.js"></script>
+  <script src="lineage.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

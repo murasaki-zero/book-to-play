@@ -1,0 +1,13 @@
+{
+  "name": "book-to-play-solitude",
+  "version": "1.0.0",
+  "description": "百年孤独 · 文学社科时代精读室",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-standalone.mjs",
+    "check": "node --check dist/app.js && node --check dist/context.js && node --check dist/lineage.js && node --test tests/*.test.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
