@@ -56,7 +56,7 @@ export function renderLab(u,a) {
   }
   if(type==='twoPass') body+=labField(a,'firstFeeling','第 1 轮结束后：回忆我的感受')+labField(a,'secondFeeling','第 2 轮：停顿时注意到了什么？');
   if(type==='pulse') body+=labField(a,'feeling','我的感受（不代表其他玩家）','出现在哪一刻？可以是好奇、紧张、无聊或其他感受。');
-  return `<section class="activity lab-activity"><div class="activity-heading"><span class="activity-icon">✦</span><h3>${u.nav}</h3></div><p class="activity-intro">${labInstructions[type]}</p><span class="label teaching">教学补充 · ${labForms[type]}</span><div class="lab-body">${body}</div></section>`;
+  return `<section class="activity lab-activity"><div class="activity-heading"><span class="activity-icon">✦</span><h3>${labEscape(u.nav)}</h3></div><p class="activity-intro">${labInstructions[type]}</p><span class="label teaching">教学补充 · ${labForms[type]}</span><div class="lab-body">${body}</div></section>`;
 }
 const labForms={pulse:'可玩原型',twoPass:'两轮体验对照',spectator:'双视角呈现',toy:'自由探索与目标对照',grid:'可执行规则',value:'资源用途对照',interruption:'中断与恢复',adaptation:'场景改造',perspective:'观察日志',essence:'概念卡编辑',forge:'定义重组',venues:'场景漫游'};
 const labInstructions={pulse:'完成一轮追光：点击亮起的圆点，共 5 次。可切换固定与变换位置，再记录自己的感受。',twoPass:'完整玩完第 1 轮；切换到第 2 轮，在途中点击“停一下”后继续。结果按轮次分别保存。',spectator:'先在隐藏模式完成一轮；公开观众信息后再完成一轮。看右侧观众席多了哪些信息。',toy:'自由探索至少走两步并记录；打开目标模式，再尝试到达灯塔。',grid:'修改步数或障碍后试玩两种不同配置（走到成功或失败）。方向键和移动按钮均可操作。',value:'收集记录与钥匙模式各完成一轮（成功或失败）。资源用途会实际改变进门规则。',interruption:'每种恢复规则各做一次：走至少两步→模拟来电→恢复。两次结果会保存供你比较。',adaptation:'两种场景分别走至少两步并模拟来电、恢复。观察任务长度与恢复规则的变化。',perspective:'回想一段真实游戏经历，用三种视角写具体记录，再写一个需要确认的解释。',essence:'从打雪仗情境选 2—3 个关键部分，用上下按钮排优先级，再写一份体验配方。',forge:'选 3—5 个概念组织解释链，写出你的一句定义，再找一个边界例子检查它。',venues:'点击探索至少两个场景，比较人在其中怎样参与，再写出一处设计修改。'};
