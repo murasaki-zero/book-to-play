@@ -5,7 +5,7 @@
   "type": "module",
   "description": "岩田先生任天堂传奇社长如是说：制作人决策与心法思辨练习室",
   "scripts": {
-    "check": "node --check dist/iwata-app.js && node --check dist/iwata-content.js && node --check dist/iwata-sim.js && node --test tests/*.test.mjs",
+    "check": "node --check dist/iwata-app.js && node --check dist/iwata-content.js && node --check dist/iwata-sim.js && node --check dist/iwata-trivia.js && node --test tests/*.test.mjs",
     "build": "node scripts/build-standalone.mjs"
   },
   "engines": {

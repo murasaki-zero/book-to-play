@@ -3,10 +3,11 @@ const root = new URL('../dist/', import.meta.url);
 
 const html = await readFile(new URL('index.html', root), 'utf8');
 const contentJs = await readFile(new URL('iwata-content.js', root), 'utf8');
+const triviaJs = await readFile(new URL('iwata-trivia.js', root), 'utf8');
 const simJs = await readFile(new URL('iwata-sim.js', root), 'utf8');
 const appJs = await readFile(new URL('iwata-app.js', root), 'utf8');
 
-const combinedScript = [contentJs, simJs, appJs]
+const combinedScript = [contentJs, triviaJs, simJs, appJs]
   .map(src => src.replace(/^import .*;\s*$/gm, '').replace(/^export /gm, ''))
   .join('\n\n');
 

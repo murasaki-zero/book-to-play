@@ -97,3 +97,13 @@ test('主机延长线策略准确辨析红海陷阱与蓝海创新', () => {
   assert.equal(specWar.isBlueOcean, false);
   assert.match(specWar.feedback, /军备竞赛/);
 });
+
+test('时代背景与人物档案覆盖全书7章', async () => {
+  const { iwataEraProfiles } = await import('../dist/iwata-trivia.js');
+  for (let chId = 1; chId <= 7; chId++) {
+    const prof = iwataEraProfiles[chId];
+    assert.ok(prof, `第 ${chId} 章缺少时代档案`);
+    assert.ok(prof.yearSpan && prof.eraName && prof.industryContext);
+    assert.ok(Array.isArray(prof.anecdotes) && prof.anecdotes.length > 0, `第 ${chId} 章缺少幕后逸闻`);
+  }
+});

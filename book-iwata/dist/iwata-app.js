@@ -1,5 +1,6 @@
 import { iwataCatalog, iwataChapters } from './iwata-content.js';
 import { rpnCalc, evalDebtRestructure, evalBottleneck, evalProgrammerResponse, evalMother2Choice, evalConsoleStrategy } from './iwata-sim.js';
+import { iwataEraProfiles } from './iwata-trivia.js';
 
 const STORAGE_KEY = 'book-to-play:iwata:workbook:v1';
 let store = {
@@ -116,10 +117,16 @@ function render() {
             <h1 class="section-main-title">${currentSec.title}</h1>
           </header>
 
+          <!-- Historical Era Capsule (Shown at Section 1 of Chapter) -->
+          ${store.currentSection === 0 ? renderEraCapsule(store.currentChapter) : ''}
+
           <!-- Authentic Book Paragraphs -->
           <div class="article-body">
             ${renderArticleContent(currentSec)}
           </div>
+
+          <!-- Historical Trivia & Anecdotes -->
+          ${renderTriviaSection(store.currentChapter)}
 
           <!-- Section End Action & Reader's Notes -->
           <footer class="section-foot">
@@ -147,6 +154,57 @@ function render() {
   `;
 
   bindEvents();
+}
+
+function renderEraCapsule(chapterId) {
+  const profile = iwataEraProfiles[chapterId];
+  if (!profile) return '';
+
+  return `
+    <div class="era-capsule-box">
+      <div class="era-capsule-header">
+        <span class="era-tag">⏳ 时代背景坐标 · ${escapeHtml(profile.yearSpan)}</span>
+        <h3 class="era-title">${escapeHtml(profile.eraName)}</h3>
+      </div>
+      <p class="era-context">${escapeHtml(profile.industryContext)}</p>
+
+      ${profile.keyFigures?.length ? `
+        <div class="era-figures-row">
+          <div class="era-figures-label">本章出场 / 核心人物：</div>
+          <div class="era-figures-list">
+            ${profile.keyFigures.map(fig => `
+              <div class="figure-chip" title="${escapeHtml(fig.desc)}">
+                <strong>${escapeHtml(fig.name)}</strong>
+                <span>${escapeHtml(fig.role)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderTriviaSection(chapterId) {
+  const profile = iwataEraProfiles[chapterId];
+  if (!profile || !profile.anecdotes || profile.anecdotes.length === 0) return '';
+
+  return `
+    <div class="trivia-section-box">
+      <div class="trivia-header">
+        <span class="trivia-badge">✦ 历史小趣事 & 幕后逸闻</span>
+        <span class="trivia-hint">（帮助读者建立更生动的历史代入感）</span>
+      </div>
+      <div class="trivia-cards-grid">
+        ${profile.anecdotes.map(item => `
+          <div class="trivia-card">
+            <h4>💡 ${escapeHtml(item.title)}</h4>
+            <p>${escapeHtml(item.content)}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
 }
 
 function renderArticleContent(sec) {
