@@ -746,6 +746,12 @@
         </div>
       </div>
 
+      <!-- LAN Access for iPad/Mobile Button -->
+      <button class="btn-icon-nav" id="btn-show-lan" onclick="openLanDialog()" title="在局域网内用 iPad / 手机访问">
+        <span>📱</span>
+        <span>移动端 / iPad 访问</span>
+      </button>
+
       <!-- Git History Button -->
       <button class="btn-icon-nav" id="btn-show-git" onclick="document.querySelector('#git-dialog').showModal()" title="查看GitHub提交记录">
         <span>🕒</span>
@@ -1044,6 +1050,30 @@
     </div>
   </dialog>
 
+  <!-- LAN / iPad Access Dialog -->
+  <dialog id="lan-dialog">
+    <div class="dialog-header">
+      <h3>📱 同局域网多设备访问 (iPad / 手机 / 备用机)</h3>
+      <button class="dialog-close" onclick="document.querySelector('#lan-dialog').close()">×</button>
+    </div>
+    <div class="dialog-body">
+      <p style="font-size: 13.5px; color: var(--ink-dim); line-height: 1.7; margin-bottom: 16px;">
+        只要您的 iPad 或手机与此电脑连接在<strong>同一个 Wi-Fi 网络</strong>，在移动设备浏览器中输入以下地址即可同步阅读与思辨：
+      </p>
+
+      <div id="lan-urls-container" style="display:flex; flex-direction:column; gap:12px; margin-bottom: 20px;">
+        <div style="font-size:13px; color:var(--ink-muted);">正在获取局域网地址……</div>
+      </div>
+
+      <div style="background:var(--bg-panel-sub); border:1px solid var(--card-border); border-radius:8px; padding:14px; font-size:12.5px; color:var(--ink-muted); line-height:1.6;">
+        <strong style="color:var(--accent-orange); display:block; margin-bottom:4px;">💡 连接贴士：</strong>
+        1. 确保 iPad / 手机已连接到相同的 Wi-Fi 路由器。<br>
+        2. 如果无法打开，请检查 Mac 的【系统设置】->【网络】->【防火墙】是否允许传入连接。<br>
+        3. 所有学习进度与心得保存在各自设备的本地浏览器缓存中。
+      </div>
+    </div>
+  </dialog>
+
   <!-- Toast Notification -->
   <div id="toast-msg">已复制制作指令到剪贴板！</div>
 
@@ -1303,6 +1333,60 @@
         console.warn('读取岩田先生进度失败', err);
       }
     })();
+
+    // LAN / Mobile Dialog handler
+    async function openLanDialog() {
+      const modal = document.querySelector('#lan-dialog');
+      const container = document.querySelector('#lan-urls-container');
+      modal.showModal();
+
+      try {
+        const res = await fetch('/api/network-info');
+        if (res.ok) {
+          const data = await res.json();
+          const port = data.port || 4173;
+          const lanIps = data.lanIps || [];
+
+          if (lanIps.length === 0) {
+            container.innerHTML = `
+              <div style="background:var(--bg-panel-sub); padding:12px; border-radius:6px; font-size:13px; color:#fbbf24;">
+                ⚠️ 当前未检测到外部局域网 IPv4。请检查 Mac 是否已接入 Wi-Fi。
+              </div>
+            `;
+            return;
+          }
+
+          container.innerHTML = lanIps.map(net => {
+            const url = `http://${net.address}:${port}`;
+            return `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel-sub); border:1px solid var(--card-border); padding:10px 14px; border-radius:8px; gap:12px;">
+                <div>
+                  <div style="font-family:var(--font-mono); font-size:14px; font-weight:600; color:#38bdf8; word-break:break-all;">${url}</div>
+                  <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">网卡接口：${net.iface}</div>
+                </div>
+                <button onclick="navigator.clipboard.writeText('${url}').then(() => showToast('已复制局域网网址！'))" style="background:var(--bg); border:1px solid var(--accent-blue); color:var(--accent-blue); padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer; white-space:nowrap;">
+                  复制网址
+                </button>
+              </div>
+            `;
+          }).join('');
+          return;
+        }
+      } catch (err) {
+        // Fallback if accessed via file:// or static file without node server
+      }
+
+      // Fallback display if not using Node.js API
+      const curHost = window.location.hostname;
+      const curPort = window.location.port || '4173';
+      const fallbackUrl = `http://${curHost === 'localhost' || curHost === '127.0.0.1' ? '<Mac的局域网IP>' : curHost}:${curPort}`;
+      container.innerHTML = `
+        <div style="background:var(--bg-panel-sub); border:1px solid var(--card-border); padding:12px; border-radius:8px; font-size:13px;">
+          <div style="color:var(--ink-dim); margin-bottom:6px;">请在终端运行 <code>npm run serve</code>，或在终端查看 Mac 局域网 IP：</div>
+          <div style="font-family:var(--font-mono); font-size:13.5px; color:#38bdf8;">${fallbackUrl}</div>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
