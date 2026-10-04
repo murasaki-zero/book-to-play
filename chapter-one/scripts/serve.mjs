@@ -44,9 +44,16 @@ function parseBookMeta(filename, stats) {
   if (!title) title = cleanName;
 
   // Workflow classification rule:
-  // Biography/Memoir keywords
+  // 1. Literature & Humanities keywords
+  const litKeywords = ['孤独', '血管', '德米安', '黑塞', '马尔克斯', '加西亚', '加莱亚诺', '小说', '文学', '散文', '史诗', '诗歌'];
+  const isLiterature = litKeywords.some(kw => cleanName.includes(kw));
+
+  // 2. Biography/Memoir keywords
   const bioKeywords = ['传', '传记', '自传', '回忆录', '如是说', '先生', '访谈', '生平', '生父', 'Jobs', 'Musk', 'Iwata'];
-  const isBiography = bioKeywords.some(kw => cleanName.includes(kw));
+  const isBiography = !isLiterature && bioKeywords.some(kw => cleanName.includes(kw));
+
+  const workflow = isLiterature ? 'literature' : isBiography ? 'memoir' : 'methodology';
+  const workflowName = isLiterature ? '文学社科精读工作流' : isBiography ? '传记类思辨工作流' : '方法论设计工作流';
 
   // Recognized active projects
   let status = 'idle'; // idle | in_progress | ready
@@ -82,13 +89,19 @@ function parseBookMeta(filename, stats) {
     spec = {
       format: ext.replace('.', '').toUpperCase(),
       size: (stats.size / 1024 / 1024).toFixed(1) + ' MB',
-      tag: isBiography ? '传记思辨' : '系统研读'
+      tag: isLiterature ? '时代映射' : isBiography ? '传记思辨' : '系统研读'
     };
 
     // Check cached cover
     const hash = crypto.createHash('md5').update(filename).digest('hex').slice(0, 12);
     cover = `chapter-one/dist/assets/covers/cache/cover-${hash}.jpg`;
   }
+
+  const commandPrompt = isLiterature
+    ? `开始按照《文学类制作工作流.md》制作《${title}》的时代背景与映射精读室`
+    : isBiography
+      ? `开始按照《传记类制作工作流.md》制作《${title}》的思辨精读练习室`
+      : `开始制作《${title}》互动练习室`;
 
   return {
     filename,
@@ -98,15 +111,14 @@ function parseBookMeta(filename, stats) {
     size: stats.size,
     mtime: stats.mtime,
     isBiography,
-    workflow: isBiography ? 'memoir' : 'methodology',
-    workflowName: isBiography ? '传记类思辨工作流' : '方法论设计工作流',
+    isLiterature,
+    workflow,
+    workflowName,
     status,
     projectUrl,
     cover,
     spec,
-    commandPrompt: isBiography 
-      ? `开始按照《传记类制作工作流.md》制作《${title}》的思辨精读练习室`
-      : `开始制作《${title}》互动练习室`
+    commandPrompt
   };
 }
 

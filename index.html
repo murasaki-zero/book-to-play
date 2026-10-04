@@ -1207,13 +1207,20 @@
 
     function openDynamicPipeline(book) {
       const isMemoir = book.workflow === 'memoir';
+      const isLit = book.workflow === 'literature';
       const title = book.title;
       const cmd = book.commandPrompt;
 
       document.querySelector('#pipeline-modal-title').textContent = `《${title}》· 制作流水线`;
       const contentEl = document.querySelector('#pipeline-modal-content');
 
-      const steps = isMemoir ? [
+      const steps = isLit ? [
+        { name: "本地原始 EPUB / 文本提取", status: "done", desc: "已放置于 Book/ 目录，完整自然段就绪" },
+        { name: "时代地理坐标仓 (Spatiotemporal Matrix)", status: "current", desc: "交代殖民历史背景、拉美资源动荡与魔幻现实主义文学脉络" },
+        { name: "现实隐喻与历史互文注脚 (Metaphor Notes)", status: "waiting", desc: "对关键章节、神话意象与真实历史事件提供深度映射" },
+        { name: "人物家族谱系仓 (Lineage Tree)", status: "waiting", desc: "构建多代人物分支与历史时间线交互对照表" },
+        { name: "文学长文精读器与离线单文件构建", status: "waiting", desc: "专注文本质感与个人札记，不设重度数值交互" }
+      ] : isMemoir ? [
         { name: "本地原始 EPUB / 文本提取", status: "done", desc: "已放置于 Book/ 目录，格式就绪" },
         { name: "自然段长文精读切分与 JSON 结构化", status: "current", desc: "严格保留完整自然段落，禁止切为碎片选择题" },
         { name: "时代背景坐标仓 (Era Capsule) 与人物档案", status: "waiting", desc: "梳理年份环境、危机处境与关键同侪档案" },
@@ -1227,10 +1234,12 @@
         { name: "单文件打包与全量自动化校验", status: "waiting", desc: "生成独立 HTML 并运行全量单元测试" }
       ];
 
+      const workflowLabel = isLit ? '🏛️ 文学社科精读工作流' : isMemoir ? '📜 传记类制作工作流' : '🎲 方法论设计工作流';
+
       contentEl.innerHTML = `
         <div style="margin-bottom:16px;">
           <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
-            <span>适用工作流：<strong>${isMemoir ? '📜 传记类制作工作流' : '🎲 方法论设计工作流'}</strong></span>
+            <span>适用工作流：<strong>${workflowLabel}</strong></span>
             <span style="color:var(--accent-orange); font-family:var(--font-mono);">随时可开工</span>
           </div>
           <div class="progress-bar-bg" style="height:10px;">
@@ -1435,20 +1444,22 @@
             card.id = `card-custom-${encodeURIComponent(book.title).slice(0, 10)}`;
 
             const isMemoir = book.workflow === 'memoir';
-            const badgeClass = isMemoir ? 'ready' : 'plan';
-            const iconBadge = isMemoir ? '📖 传记思辨' : '🎲 系统研读';
-            const pillStyle = isMemoir 
-              ? 'background:rgba(56,189,248,0.15); border-color:var(--accent-blue); color:#38bdf8;'
-              : 'background:rgba(251,191,36,0.15); border-color:#fbbf24; color:#fbbf24;';
+            const isLit = book.workflow === 'literature';
+            const iconBadge = isLit ? '🏛️ 文学社科' : isMemoir ? '📖 传记思辨' : '🎲 系统研读';
+            const pillStyle = isLit
+              ? 'background:rgba(168,85,247,0.15); border-color:#c084fc; color:#c084fc;'
+              : isMemoir 
+                ? 'background:rgba(56,189,248,0.15); border-color:var(--accent-blue); color:#38bdf8;'
+                : 'background:rgba(251,191,36,0.15); border-color:#fbbf24; color:#fbbf24;';
 
             const coverImgHtml = book.cover ? `
               <div class="book-cover-wrap">
-                <img src="${book.cover}" alt="${book.title}封面" onerror="this.parentElement.innerHTML='<div style=\\'font-size:36px; display:grid; place-items:center; width:100%; height:100%;\\'>${isMemoir ? '📜' : '📘'}</div>'">
+                <img src="${book.cover}" alt="${book.title}封面" onerror="this.parentElement.innerHTML='<div style=\\'font-size:36px; display:grid; place-items:center; width:100%; height:100%;\\'>${isLit ? '🏛️' : isMemoir ? '📜' : '📘'}</div>'">
               </div>
             ` : `
               <div class="book-cover-wrap" style="display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
                 <div style="font-size:36px; color:var(--ink-muted); text-align:center;">
-                  ${isMemoir ? '📜' : '📘'}
+                  ${isLit ? '🏛️' : isMemoir ? '📜' : '📘'}
                 </div>
               </div>
             `;
@@ -1477,7 +1488,7 @@
                       <div class="lbl">文件大小</div>
                     </div>
                     <div class="book-spec-item">
-                      <div class="val">${isMemoir ? '传记' : '设计'}</div>
+                      <div class="val">${isLit ? '文学' : isMemoir ? '传记' : '设计'}</div>
                       <div class="lbl">${book.workflowName}</div>
                     </div>
                   </div>
@@ -1497,7 +1508,7 @@
 
                 <div class="btn-action-group">
                   <button class="btn-sub" style="width:100%; text-align:center; color:var(--accent-orange); border-color:var(--accent-orange);" onclick="openDynamicPipeline(${JSON.stringify(book).replace(/"/g, '&quot;')})">
-                    按《${isMemoir ? '传记类工作流' : '制作工作流'}》发起制作 ↗
+                    按《${isLit ? '文学类工作流' : isMemoir ? '传记类工作流' : '制作工作流'}》发起制作 ↗
                   </button>
                 </div>
               </div>
