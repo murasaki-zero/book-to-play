@@ -23,6 +23,7 @@
       --accent-orange-soft: rgba(230, 126, 60, 0.15);
       --accent-blue: #368cd6;
       --accent-blue-soft: rgba(54, 140, 214, 0.15);
+      --accent-cyan: #22c55e;
       --card-border: rgba(148, 167, 184, 0.16);
       --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(230, 126, 60, 0.15);
@@ -46,6 +47,7 @@
       --accent-orange-soft: rgba(212, 100, 48, 0.12);
       --accent-blue: #226294;
       --accent-blue-soft: rgba(34, 98, 148, 0.12);
+      --accent-cyan: #16a34a;
       --card-border: #dbe4eb;
       --card-shadow: 0 8px 24px rgba(20, 46, 67, 0.08);
       --card-hover-shadow: 0 16px 36px rgba(20, 46, 67, 0.14), 0 0 20px rgba(212, 100, 48, 0.12);
@@ -412,17 +414,29 @@
       color: var(--ink-dim);
     }
     .progress-bar-bg {
-      height: 6px;
+      height: 8px;
       background: var(--card-border);
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: hidden;
+      position: relative;
     }
     .progress-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #e67e3c 0%, #f4a575 100%);
-      border-radius: 3px;
+      border-radius: 4px;
       width: 0%;
       transition: width 0.4s ease;
+    }
+
+    /* Active Pulsing Progress for Pipeline */
+    .progress-bar-fill.pipeline-pulse {
+      background: linear-gradient(90deg, #368cd6 0%, #38bdf8 50%, #368cd6 100%);
+      background-size: 200% 100%;
+      animation: progress-pulse 2s linear infinite;
+    }
+    @keyframes progress-pulse {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
     }
 
     .btn-action-group {
@@ -461,11 +475,16 @@
       font-size: 13px;
       font-weight: 500;
       white-space: nowrap;
-      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
     }
     .btn-sub:hover {
       color: var(--ink);
       border-color: var(--accent-blue);
+      background: var(--bg-panel);
+    }
+    .btn-sub:active {
+      transform: translateY(1px);
     }
 
     /* Empty / Upcoming Slot Card */
@@ -480,7 +499,7 @@
       box-shadow: var(--card-shadow);
     }
 
-    /* Commit History Modal / Drawer */
+    /* Modal / Drawer */
     dialog {
       padding: 0;
       max-width: 620px;
@@ -523,6 +542,93 @@
       color: var(--ink-dim);
       max-height: 70vh;
       overflow-y: auto;
+    }
+
+    /* Pipeline Step Tracker */
+    .pipeline-track {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--bg-panel-sub);
+      border: 1px solid var(--card-border);
+    }
+    .pipeline-step.done {
+      border-color: rgba(34, 197, 94, 0.3);
+      background: rgba(34, 197, 94, 0.06);
+    }
+    .pipeline-step.current {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .pipeline-step.waiting {
+      opacity: 0.7;
+    }
+    .pipeline-step-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pipeline-step.done .pipeline-step-badge {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+    .pipeline-step.current .pipeline-step-badge {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
+    .pipeline-step.waiting .pipeline-step-badge {
+      background: var(--card-border);
+      color: var(--ink-muted);
+    }
+    .pipeline-step-text strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13.5px;
+      margin-bottom: 2px;
+    }
+    .pipeline-step-text span {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    .pipeline-launch-box {
+      background: var(--bg-panel-sub);
+      border: 1px dashed var(--accent-orange);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-top: 18px;
+    }
+    .pipeline-launch-box h4 {
+      font-size: 14px;
+      color: var(--accent-orange);
+      margin-bottom: 6px;
+    }
+    .pipeline-command-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+    .pipeline-command-code {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      background: var(--bg);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      color: var(--ink);
     }
 
     /* Commit List styling */
@@ -569,6 +675,26 @@
       font-family: var(--font-mono);
       display: inline-block;
     }
+
+    /* Toast */
+    #toast-msg {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #182836;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 100;
+    }
+    #toast-msg.show { opacity: 1; }
 
     /* Footer */
     .shelf-footer {
@@ -705,7 +831,7 @@
         </article>
 
         <!-- Book 2: Level Up! (Scott Rogers) -->
-        <article class="book-card">
+        <article class="book-card" id="card-levelup">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="assets/covers/level-up-rogers.jpg" alt="通关！游戏设计之道封面">
@@ -741,17 +867,17 @@
           <div class="book-card-body">
             <div class="progress-section">
               <div class="progress-header">
-                <span>书架状态：待转化练习室</span>
-                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">规划中</strong>
+                <span>流水线进度：大纲与资源就绪</span>
+                <strong style="color:var(--accent-blue); font-family:var(--font-mono);">50%</strong>
               </div>
               <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: 15%; background: var(--card-border);"></div>
+                <div class="progress-bar-fill pipeline-pulse" style="width: 50%;"></div>
               </div>
             </div>
 
             <div class="btn-action-group">
-              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
-                查看待办流水线 ↗
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="openBookPipeline('levelup')">
+                查看流水线进度 · 发起制作 ↗
               </button>
             </div>
           </div>
@@ -768,7 +894,7 @@
 
       <div class="books-grid">
         <!-- Book 3: 236 Game Design Tips -->
-        <article class="book-card">
+        <article class="book-card" id="card-tips236">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="assets/covers/game-design-236-tips.jpg" alt="游戏设计的236个技巧封面">
@@ -804,24 +930,24 @@
           <div class="book-card-body">
             <div class="progress-section">
               <div class="progress-header">
-                <span>状态：已检索到 EPUB 原始文件</span>
-                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">可制作</strong>
+                <span>流水线进度：EPUB解析就绪</span>
+                <strong style="color:var(--accent-blue); font-family:var(--font-mono);">30%</strong>
               </div>
               <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: 10%; background: var(--card-border);"></div>
+                <div class="progress-bar-fill pipeline-pulse" style="width: 30%;"></div>
               </div>
             </div>
 
             <div class="btn-action-group">
-              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
-                准备拆解章节 ↗
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="openBookPipeline('tips236')">
+                查看流水线进度 · 发起制作 ↗
               </button>
             </div>
           </div>
         </article>
 
         <!-- Book 4: Satoru Iwata (Ask Iwata) -->
-        <article class="book-card">
+        <article class="book-card" id="card-iwata">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="assets/covers/mr-iwata.jpg" alt="岩田先生封面">
@@ -857,24 +983,24 @@
           <div class="book-card-body">
             <div class="progress-section">
               <div class="progress-header">
-                <span>状态：已检索到 EPUB 原始文件</span>
-                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">待转化</strong>
+                <span>流水线进度：章节结构就绪</span>
+                <strong style="color:var(--accent-blue); font-family:var(--font-mono);">25%</strong>
               </div>
               <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: 10%; background: var(--card-border);"></div>
+                <div class="progress-bar-fill pipeline-pulse" style="width: 25%;"></div>
               </div>
             </div>
 
             <div class="btn-action-group">
-              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
-                心法研读模式 ↗
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="openBookPipeline('iwata')">
+                查看流水线进度 · 发起制作 ↗
               </button>
             </div>
           </div>
         </article>
 
         <!-- Book Slot 5: Reserve Slot for Custom Book -->
-        <article class="book-card slot" onclick="document.querySelector('#slot-dialog').showModal()" style="cursor:pointer;">
+        <article class="book-card slot" onclick="openBookPipeline('custom')" style="cursor:pointer;">
           <div style="padding: 40px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; height: 100%;">
             <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--bg-panel-sub); border: 1px solid var(--card-border); display: grid; place-items: center; font-size: 24px; color: var(--ink-muted); margin-bottom: 14px;">+</div>
             <h3 style="font-family: var(--font-serif); font-size: 18px; color: var(--ink); margin-bottom: 6px;">上架更多书籍</h3>
@@ -887,6 +1013,19 @@
       <div class="shelf-plank"></div>
     </section>
   </main>
+
+  <!-- Book Pipeline Interactive Modal -->
+  <dialog id="pipeline-dialog">
+    <div class="dialog-header">
+      <h3 id="pipeline-modal-title">书籍制作流水线状态</h3>
+      <button class="dialog-close" onclick="document.querySelector('#pipeline-dialog').close()">×</button>
+    </div>
+    <div class="dialog-body">
+      <div id="pipeline-modal-content">
+        <!-- Injected dynamically by openBookPipeline -->
+      </div>
+    </div>
+  </dialog>
 
   <!-- Git Commit History Dialog -->
   <dialog id="git-dialog">
@@ -901,22 +1040,8 @@
     </div>
   </dialog>
 
-  <!-- Dialog for Adding New Books -->
-  <dialog id="slot-dialog">
-    <div class="dialog-header">
-      <h3>如何为书架制作互动练习室？</h3>
-      <button class="dialog-close" onclick="document.querySelector('#slot-dialog').close()">×</button>
-    </div>
-    <div class="dialog-body">
-      <p>“书中练习室”遵循纯本地、免外部依赖、高互动的原则：</p>
-      <ul style="margin: 12px 0 16px 20px; color: var(--ink);">
-        <li style="margin-bottom:6px;"><strong>原书依据</strong>：对照本地书籍扫描页或原文，提炼核心概念与对应章节透镜。</li>
-        <li style="margin-bottom:6px;"><strong>互动实验</strong>：不套用单调的多选题，为每个关键概念设计一个可调参数、可观察结果的交互沙盒。</li>
-        <li style="margin-bottom:6px;"><strong>独立存储</strong>：每个书目拥有独立的存储命名空间，学习记录与笔记全部妥善保存在你的浏览器中。</li>
-      </ul>
-      <p>目前《游戏设计艺术（第 2 版）》已完整完工 34 章共 136 个单元。准备好接入下一本好书时，可随时发起对应章节的制作流水线！</p>
-    </div>
-  </dialog>
+  <!-- Toast Notification -->
+  <div id="toast-msg">已复制制作指令到剪贴板！</div>
 
   <!-- Shelf Footer -->
   <footer class="shelf-footer">
@@ -924,8 +1049,120 @@
   </footer>
 
   <script>
+    // Pipeline definitions for upcoming books
+    const PIPELINE_DATA = {
+      levelup: {
+        title: "《通关！游戏设计之道（第 2 版）》",
+        percent: 50,
+        estimateTime: "随时可开工 · 发送指令后即刻执行",
+        command: "开始制作《通关！游戏设计之道》第 1-4 章练习室",
+        steps: [
+          { name: "本地原始 EPUB 检索与封面提取", status: "done", desc: "已完成 · 真实封面与目录已就绪" },
+          { name: "机制/关卡/敌人核心大纲梳理", status: "done", desc: "已完成 · 提炼图纸与原型结构" },
+          { name: "可玩实验与规则沙盒编写", status: "current", desc: "等待触发 · 准备接入关卡编辑与敌人AI原型" },
+          { name: "自动化测试与独立工作簿打包", status: "waiting", desc: "排队中 · 完成后即生成可玩入口" }
+        ]
+      },
+      tips236: {
+        title: "《游戏设计的 236 个技巧》",
+        percent: 30,
+        estimateTime: "随时可开工 · 发送指令后即刻执行",
+        command: "开始制作《游戏设计的 236 个技巧》微实验练习室",
+        steps: [
+          { name: "本地原始 EPUB 检索与封面提取", status: "done", desc: "已完成 · 封面与 236 技巧条目已就绪" },
+          { name: "镜头/手感/反馈分类体系搭建", status: "current", desc: "进行中 · 准备微机制沙盒分类" },
+          { name: "236 个交互式微参数调优沙盒编写", status: "waiting", desc: "待触发 · 提供打击感与手感对比滑块" },
+          { name: "单元校验与多章节集成打包", status: "waiting", desc: "排队中 · 构建单文件版练习室" }
+        ]
+      },
+      iwata: {
+        title: "《岩田先生任天堂传奇社长如是说》",
+        percent: 25,
+        estimateTime: "随时可开工 · 发送指令后即刻执行",
+        command: "开始制作《岩田先生》思辨练习室",
+        steps: [
+          { name: "本地原始 EPUB 检索与封面提取", status: "done", desc: "已完成 · 访谈对话文本已定位" },
+          { name: "理念对话与决策思辨情境梳理", status: "current", desc: "进行中 · 提炼管理哲学与游戏心态" },
+          { name: "思辨对话选择与决策树沙盒制作", status: "waiting", desc: "待触发 · 让学习者亲历社长决策抉择" },
+          { name: "心法卡片与复习系统集成", status: "waiting", desc: "排队中 · 生成独立学习室" }
+        ]
+      },
+      custom: {
+        title: "上架更多新书",
+        percent: 10,
+        estimateTime: "将书籍文件（PDF/EPUB）放入文件夹后随时触发",
+        command: "帮我把新放入的书籍制作成书中练习室",
+        steps: [
+          { name: "在当前目录放入 PDF 或 EPUB", status: "current", desc: "支持带目录的任何游戏或交互书籍" },
+          { name: "AI 自动解析目录与核心概念", status: "waiting", desc: "提炼核心要点与章节模型" },
+          { name: "定制每章 4 单元交互实验与透镜", status: "waiting", desc: "生成真实状态可调实验沙盒" },
+          { name: "自动生成入口与书架卡位", status: "waiting", desc: "无缝嵌入我的书架" }
+        ]
+      }
+    };
+
+    function openBookPipeline(key) {
+      const data = PIPELINE_DATA[key];
+      if (!data) return;
+      document.querySelector('#pipeline-modal-title').textContent = `${data.title} · 转化流水线`;
+      const contentEl = document.querySelector('#pipeline-modal-content');
+      
+      contentEl.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span>流水线总进度：<strong>${data.percent}%</strong></span>
+            <span style="color:var(--accent-orange); font-family:var(--font-mono);">${data.estimateTime}</span>
+          </div>
+          <div class="progress-bar-bg" style="height:10px;">
+            <div class="progress-bar-fill pipeline-pulse" style="width:${data.percent}%;"></div>
+          </div>
+        </div>
+
+        <div class="pipeline-track">
+          ${data.steps.map((s, idx) => `
+            <div class="pipeline-step ${s.status}">
+              <div class="pipeline-step-badge">${s.status === 'done' ? '✓ 完成' : s.status === 'current' ? '▶ 进行中' : '排队中'}</div>
+              <div class="pipeline-step-text">
+                <strong>0${idx + 1} · ${s.name}</strong>
+                <span>${s.desc}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="pipeline-launch-box">
+          <h4>✦ 如何立即启动并做成可点击进入的练习室？</h4>
+          <p style="font-size:13px; color:var(--ink-dim); margin-top:4px;">
+            AI 助手当前已在会话中待命。只需复制下方指令发送给我，即可立即开始编写第一批章节代码！
+          </p>
+          <div class="pipeline-command-row">
+            <input class="pipeline-command-code" readonly value="${data.command}">
+            <button class="btn-sub" style="color:var(--accent-blue); border-color:var(--accent-blue);" onclick="copyCommand('${data.command}')">复制指令</button>
+          </div>
+        </div>
+      `;
+
+      document.querySelector('#pipeline-dialog').showModal();
+    }
+
+    function copyCommand(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.querySelector('#toast-msg');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2400);
+      }).catch(() => {
+        alert('复制指令失败，请手动在输入框复制');
+      });
+    }
+
     // Git commit history data
     const GIT_COMMITS = [
+      {
+        hash: "1835f50",
+        date: "2026-10-05",
+        subject: "新增书架浅色模式切换、GitHub提交历史组件并提取展示本地真实书目封面",
+        signer: "Gemini 3.8 Flash"
+      },
       {
         hash: "9596206",
         date: "2026-10-05",
