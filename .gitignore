@@ -1,0 +1,29 @@
+# 本地原书、扫描页与 OCR 全文
+*.pdf
+*.epub
+/chapter-one/dist/assets/source/
+/chapter-one/content/*ocr.json
+
+# 历史工程压缩包与适配前的其他项目规则
+*.zip
+/chapter-one/content/AGENTS.original.md
+
+# 学习者导出的个人记录与恢复备份
+全书进度备份-*.json
+*进度备份*.json
+*学习进度*.json
+*学习记录*.md
+*.backup.json
+/personal/
+/backups/
+
+# 系统文件、依赖、缓存、环境配置与日志
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+.env
+.env.*
+!.env.example
+*.log

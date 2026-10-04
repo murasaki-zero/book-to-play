@@ -1,0 +1,692 @@
+[
+  {
+    "id": 1,
+    "title": "太初之时，有设计师",
+    "pdfStart": 49,
+    "pdfEnd": 56,
+    "available": true,
+    "pdfRange": [
+      49,
+      56
+    ],
+    "bookRange": [
+      1,
+      8
+    ],
+    "lenses": []
+  },
+  {
+    "id": 2,
+    "title": "设计师创造体验",
+    "pdfStart": 57,
+    "pdfEnd": 72,
+    "available": true,
+    "pdfRange": [
+      57,
+      72
+    ],
+    "bookRange": [
+      9,
+      24
+    ],
+    "lenses": [
+      1,
+      2
+    ]
+  },
+  {
+    "id": 3,
+    "title": "体验发生于场景",
+    "pdfStart": 73,
+    "pdfEnd": 80,
+    "available": true,
+    "pdfRange": [
+      73,
+      80
+    ],
+    "bookRange": [
+      25,
+      32
+    ],
+    "lenses": [
+      3
+    ]
+  },
+  {
+    "id": 4,
+    "title": "体验从游戏中诞生",
+    "pdfStart": 81,
+    "pdfEnd": 98,
+    "available": true,
+    "pdfRange": [
+      81,
+      98
+    ],
+    "bookRange": [
+      33,
+      50
+    ],
+    "lenses": [
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  {
+    "id": 5,
+    "title": "游戏由元素构成",
+    "pdfStart": 99,
+    "pdfEnd": 106,
+    "available": true,
+    "pdfRange": [
+      99,
+      106
+    ],
+    "bookRange": [
+      51,
+      58
+    ],
+    "lenses": [
+      9,
+      10
+    ]
+  },
+  {
+    "id": 6,
+    "title": "元素支撑起主题",
+    "pdfStart": 107,
+    "pdfEnd": 118,
+    "available": true,
+    "pdfRange": [
+      107,
+      118
+    ],
+    "bookRange": [
+      59,
+      70
+    ],
+    "lenses": [
+      11,
+      12
+    ]
+  },
+  {
+    "id": 7,
+    "title": "游戏始于一个创意",
+    "pdfStart": 119,
+    "pdfEnd": 140,
+    "available": true,
+    "pdfRange": [
+      119,
+      140
+    ],
+    "bookRange": [
+      71,
+      92
+    ],
+    "lenses": [
+      13,
+      14
+    ]
+  },
+  {
+    "id": 8,
+    "title": "游戏通过迭代提高",
+    "pdfStart": 141,
+    "pdfEnd": 166,
+    "available": true,
+    "pdfRange": [
+      141,
+      166
+    ],
+    "bookRange": [
+      93,
+      118
+    ],
+    "lenses": [
+      15,
+      16,
+      17,
+      18
+    ]
+  },
+  {
+    "id": 9,
+    "title": "游戏为玩家而生",
+    "pdfStart": 167,
+    "pdfEnd": 184,
+    "available": true,
+    "pdfRange": [
+      167,
+      184
+    ],
+    "bookRange": [
+      119,
+      136
+    ],
+    "lenses": [
+      19,
+      20
+    ]
+  },
+  {
+    "id": 10,
+    "title": "体验在玩家的脑中",
+    "pdfStart": 185,
+    "pdfEnd": 198,
+    "available": true,
+    "pdfRange": [
+      185,
+      198
+    ],
+    "bookRange": [
+      137,
+      150
+    ],
+    "lenses": [
+      21
+    ]
+  },
+  {
+    "id": 11,
+    "title": "玩家的动机驱使着玩家的脑",
+    "pdfStart": 199,
+    "pdfEnd": 208,
+    "available": true,
+    "pdfRange": [
+      199,
+      208
+    ],
+    "bookRange": [
+      151,
+      160
+    ],
+    "lenses": [
+      22,
+      23,
+      24,
+      25
+    ]
+  },
+  {
+    "id": 12,
+    "title": "有些元素是游戏机制",
+    "pdfStart": 209,
+    "pdfEnd": 252,
+    "available": true,
+    "pdfRange": [
+      209,
+      252
+    ],
+    "bookRange": [
+      161,
+      204
+    ],
+    "lenses": [
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36
+    ]
+  },
+  {
+    "id": 13,
+    "title": "游戏机制必须平衡",
+    "pdfStart": 253,
+    "pdfEnd": 290,
+    "available": true,
+    "pdfRange": [
+      253,
+      290
+    ],
+    "bookRange": [
+      205,
+      242
+    ],
+    "lenses": [
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53
+    ]
+  },
+  {
+    "id": 14,
+    "title": "游戏机制支持谜题",
+    "pdfStart": 291,
+    "pdfEnd": 306,
+    "available": true,
+    "pdfRange": [
+      291,
+      306
+    ],
+    "bookRange": [
+      243,
+      258
+    ],
+    "lenses": [
+      54,
+      55,
+      56,
+      57,
+      58
+    ]
+  },
+  {
+    "id": 15,
+    "title": "玩家通过界面玩游戏",
+    "pdfStart": 307,
+    "pdfEnd": 332,
+    "available": true,
+    "pdfRange": [
+      307,
+      332
+    ],
+    "bookRange": [
+      259,
+      284
+    ],
+    "lenses": [
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67
+    ]
+  },
+  {
+    "id": 16,
+    "title": "体验可以用它们的兴趣曲线来评价",
+    "pdfStart": 333,
+    "pdfEnd": 350,
+    "available": true,
+    "pdfRange": [
+      333,
+      350
+    ],
+    "bookRange": [
+      285,
+      302
+    ],
+    "lenses": [
+      68,
+      69,
+      70,
+      71,
+      72
+    ]
+  },
+  {
+    "id": 17,
+    "title": "有种体验叫作故事",
+    "pdfStart": 351,
+    "pdfEnd": 372,
+    "available": true,
+    "pdfRange": [
+      351,
+      372
+    ],
+    "bookRange": [
+      303,
+      324
+    ],
+    "lenses": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78
+    ]
+  },
+  {
+    "id": 18,
+    "title": "故事和游戏结构可以用间接控制艺术性地融为一体",
+    "pdfStart": 373,
+    "pdfEnd": 390,
+    "available": true,
+    "pdfRange": [
+      373,
+      390
+    ],
+    "bookRange": [
+      325,
+      342
+    ],
+    "lenses": [
+      79,
+      80,
+      81,
+      82
+    ]
+  },
+  {
+    "id": 19,
+    "title": "在世界里发生的故事与游戏",
+    "pdfStart": 391,
+    "pdfEnd": 400,
+    "available": true,
+    "pdfRange": [
+      391,
+      400
+    ],
+    "bookRange": [
+      343,
+      352
+    ],
+    "lenses": [
+      83,
+      84
+    ]
+  },
+  {
+    "id": 20,
+    "title": "世界中的角色",
+    "pdfStart": 401,
+    "pdfEnd": 424,
+    "available": true,
+    "pdfRange": [
+      401,
+      424
+    ],
+    "bookRange": [
+      353,
+      376
+    ],
+    "lenses": [
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91
+    ]
+  },
+  {
+    "id": 21,
+    "title": "世界里的空间",
+    "pdfStart": 425,
+    "pdfEnd": 440,
+    "available": true,
+    "pdfRange": [
+      425,
+      440
+    ],
+    "bookRange": [
+      377,
+      392
+    ],
+    "lenses": [
+      92,
+      93
+    ]
+  },
+  {
+    "id": 22,
+    "title": "世界的外观与感觉是由其美学所定义的",
+    "pdfStart": 441,
+    "pdfEnd": 450,
+    "available": true,
+    "pdfRange": [
+      441,
+      450
+    ],
+    "bookRange": [
+      393,
+      402
+    ],
+    "lenses": [
+      94
+    ]
+  },
+  {
+    "id": 23,
+    "title": "一些游戏让多人同乐",
+    "pdfStart": 451,
+    "pdfEnd": 456,
+    "available": true,
+    "pdfRange": [
+      451,
+      456
+    ],
+    "bookRange": [
+      403,
+      408
+    ],
+    "lenses": [
+      95
+    ]
+  },
+  {
+    "id": 24,
+    "title": "其他玩家有时会形成社群",
+    "pdfStart": 457,
+    "pdfEnd": 472,
+    "available": true,
+    "pdfRange": [
+      457,
+      472
+    ],
+    "bookRange": [
+      409,
+      424
+    ],
+    "lenses": [
+      96,
+      97,
+      98,
+      99
+    ]
+  },
+  {
+    "id": 25,
+    "title": "设计师常与团队合作",
+    "pdfStart": 473,
+    "pdfEnd": 484,
+    "available": true,
+    "pdfRange": [
+      473,
+      484
+    ],
+    "bookRange": [
+      425,
+      436
+    ],
+    "lenses": [
+      100,
+      101
+    ]
+  },
+  {
+    "id": 26,
+    "title": "团队有时通过文档进行沟通",
+    "pdfStart": 485,
+    "pdfEnd": 492,
+    "available": true,
+    "pdfRange": [
+      485,
+      492
+    ],
+    "bookRange": [
+      437,
+      444
+    ],
+    "lenses": [
+      102
+    ]
+  },
+  {
+    "id": 27,
+    "title": "通过试玩创造好游戏",
+    "pdfStart": 493,
+    "pdfEnd": 510,
+    "available": true,
+    "pdfRange": [
+      493,
+      510
+    ],
+    "bookRange": [
+      445,
+      462
+    ],
+    "lenses": [
+      103
+    ]
+  },
+  {
+    "id": 28,
+    "title": "制作游戏的技术",
+    "pdfStart": 511,
+    "pdfEnd": 526,
+    "available": true,
+    "pdfRange": [
+      511,
+      526
+    ],
+    "bookRange": [
+      463,
+      478
+    ],
+    "lenses": [
+      104,
+      105,
+      106
+    ]
+  },
+  {
+    "id": 29,
+    "title": "你的游戏总有个客户",
+    "pdfStart": 527,
+    "pdfEnd": 534,
+    "available": true,
+    "pdfRange": [
+      527,
+      534
+    ],
+    "bookRange": [
+      479,
+      486
+    ],
+    "lenses": [
+      107
+    ]
+  },
+  {
+    "id": 30,
+    "title": "设计师要向客户推销自己的想法",
+    "pdfStart": 535,
+    "pdfEnd": 550,
+    "available": true,
+    "pdfRange": [
+      535,
+      550
+    ],
+    "bookRange": [
+      487,
+      502
+    ],
+    "lenses": [
+      108
+    ]
+  },
+  {
+    "id": 31,
+    "title": "设计师和客户都希望游戏能盈利",
+    "pdfStart": 551,
+    "pdfEnd": 564,
+    "available": true,
+    "pdfRange": [
+      551,
+      564
+    ],
+    "bookRange": [
+      503,
+      516
+    ],
+    "lenses": [
+      109
+    ]
+  },
+  {
+    "id": 32,
+    "title": "游戏改变玩家",
+    "pdfStart": 565,
+    "pdfEnd": 582,
+    "available": true,
+    "pdfRange": [
+      565,
+      582
+    ],
+    "bookRange": [
+      517,
+      534
+    ],
+    "lenses": [
+      110
+    ]
+  },
+  {
+    "id": 33,
+    "title": "设计师担负的责任",
+    "pdfStart": 583,
+    "pdfEnd": 588,
+    "available": true,
+    "pdfRange": [
+      583,
+      588
+    ],
+    "bookRange": [
+      535,
+      540
+    ],
+    "lenses": [
+      111
+    ]
+  },
+  {
+    "id": 34,
+    "title": "每个设计师都有个目标",
+    "pdfStart": 589,
+    "pdfEnd": 594,
+    "available": true,
+    "pdfRange": [
+      589,
+      594
+    ],
+    "bookRange": [
+      541,
+      546
+    ],
+    "lenses": [
+      112,
+      "∞"
+    ]
+  }
+]

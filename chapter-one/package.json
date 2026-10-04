@@ -1,0 +1,15 @@
+{
+  "name": "book-to-play-chapter-one",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "游戏设计艺术第2版34章本地互动学习与设计工作簿",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "build": "node scripts/build-standalone.mjs",
+    "check": "node --check dist/app.js && node --check dist/content.js && node --check dist/course.js && node --check dist/chapters.js && node --check dist/workbook.js && node --check dist/studio.js && node --check dist/labs.js && node --test tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

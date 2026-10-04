@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142e43">
+  <meta name="description" content="《游戏设计艺术》第2版34章学习练习：可运行实验、关系图、设计作品与复习。">
+  <title>书中练习室 · 游戏设计艺术</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到学习内容</a>
+  <div id="app"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="source-dialog" aria-label="核对原书">
+    <div class="source-header"><div><span class="eyebrow">原书扫描页</span><h2>回到作者的文字</h2></div><button class="icon-button" id="close-source" aria-label="关闭原书">×</button></div>
+    <div class="source-controls"><label for="source-page">页码</label><select id="source-page"></select><span>书中页码与 PDF 页码相差 48 页</span></div>
+    <div class="source-image-wrap"><img id="source-image" alt="原书页面"></div>
+  </dialog>
+  <dialog id="export-dialog" aria-label="导出学习记录">
+    <div class="source-header"><div><span class="eyebrow">保存一份自己的记录</span><h2 id="export-title">导出学习记录</h2></div><button class="icon-button" id="close-export" aria-label="关闭导出">×</button></div>
+    <div class="export-body"><p>可以下载文件，也可以复制下面的完整内容。浏览器未开始下载时，仍可通过复制留存。</p><label for="export-content">导出内容</label><textarea id="export-content" readonly></textarea><div class="challenge-toolbar"><button class="button" id="download-export">下载文件</button><button class="button secondary" id="copy-export">复制内容</button></div></div>
+  </dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
