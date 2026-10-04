@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#121820">
   <meta name="description" content="书中练习室 · 互动书籍书架：把好书改造成属于你的互动练习室。">
   <title>书中练习室 · 我的书架</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/chapter-one/dist/assets/favicon.svg">
   <style>
     :root {
       /* Dark Theme */
@@ -777,7 +777,7 @@
         <article class="book-card" id="card-schell">
           <div class="book-showcase">
             <div class="book-cover-wrap">
-              <img src="assets/covers/schell-art-of-game-design.jpg" alt="游戏设计艺术封面" onerror="this.style.display='none'">
+              <img src="chapter-one/dist/assets/covers/schell-art-of-game-design.jpg" alt="游戏设计艺术封面" onerror="this.style.display='none'">
             </div>
 
             <div class="book-details">
@@ -819,11 +819,11 @@
             </div>
 
             <div class="btn-action-group">
-              <a href="开始学习.html" class="btn-enter" id="btn-enter-schell">
+              <a href="/chapter-one/dist/开始学习.html" class="btn-enter" id="btn-enter-schell">
                 <span>进入练习室</span>
                 <span style="font-size:16px;">➔</span>
               </a>
-              <a href="index.html" class="btn-sub" title="开发者模块化视图">
+              <a href="/chapter-one/dist/index.html" class="btn-sub" title="开发者模块化视图">
                 模块视图
               </a>
             </div>
@@ -834,7 +834,7 @@
         <article class="book-card" id="card-levelup">
           <div class="book-showcase">
             <div class="book-cover-wrap">
-              <img src="assets/covers/level-up-rogers.jpg" alt="通关！游戏设计之道封面">
+              <img src="chapter-one/dist/assets/covers/level-up-rogers.jpg" alt="通关！游戏设计之道封面">
             </div>
 
             <div class="book-details">
@@ -897,7 +897,7 @@
         <article class="book-card" id="card-tips236">
           <div class="book-showcase">
             <div class="book-cover-wrap">
-              <img src="assets/covers/game-design-236-tips.jpg" alt="游戏设计的236个技巧封面">
+              <img src="chapter-one/dist/assets/covers/game-design-236-tips.jpg" alt="游戏设计的236个技巧封面">
             </div>
 
             <div class="book-details">
@@ -950,14 +950,14 @@
         <article class="book-card" id="card-iwata">
           <div class="book-showcase">
             <div class="book-cover-wrap">
-              <img src="assets/covers/mr-iwata.jpg" alt="岩田先生封面">
+              <img src="chapter-one/dist/assets/covers/mr-iwata.jpg" alt="岩田先生封面">
             </div>
 
             <div class="book-details">
               <div>
                 <div class="book-badge-row">
-                  <span class="status-pill plan">本地原书已就绪</span>
-                  <span class="status-pill plan">哲学随笔</span>
+                  <span class="status-pill ready">全 7 章已完结</span>
+                  <span class="status-pill plan">心法思辨</span>
                 </div>
                 <h3 class="book-title-main">岩田先生</h3>
                 <p class="book-subinfo">任天堂传奇社长如是说 · HOBO日刊ITOI新闻</p>
@@ -965,16 +965,16 @@
 
               <div class="book-spec-grid">
                 <div class="book-spec-item">
-                  <div class="val">哲学</div>
-                  <div class="lbl">玩者之心</div>
+                  <div class="val">7</div>
+                  <div class="lbl">全书章节</div>
                 </div>
                 <div class="book-spec-item">
-                  <div class="val">领导</div>
-                  <div class="lbl">组织沟通</div>
+                  <div class="val">58</div>
+                  <div class="lbl">思辨小节</div>
                 </div>
                 <div class="book-spec-item">
-                  <div class="val">创意</div>
-                  <div class="lbl">惊喜来源</div>
+                  <div class="val">思辨</div>
+                  <div class="lbl">决策重演</div>
                 </div>
               </div>
             </div>
@@ -983,18 +983,22 @@
           <div class="book-card-body">
             <div class="progress-section">
               <div class="progress-header">
-                <span>流水线进度：章节结构就绪</span>
-                <strong style="color:var(--accent-blue); font-family:var(--font-mono);">25%</strong>
+                <span id="iwata-progress-text">学习进度：0 / 7 章完结</span>
+                <strong id="iwata-progress-pct" style="color:var(--accent-cyan); font-family:var(--font-mono);">0%</strong>
               </div>
               <div class="progress-bar-bg">
-                <div class="progress-bar-fill pipeline-pulse" style="width: 25%;"></div>
+                <div class="progress-bar-fill" id="iwata-progress-bar" style="background: linear-gradient(90deg, #16a34a 0%, #4ade80 100%);"></div>
               </div>
             </div>
 
             <div class="btn-action-group">
-              <button class="btn-sub" style="width:100%; text-align:center;" onclick="openBookPipeline('iwata')">
-                查看流水线进度 · 发起制作 ↗
-              </button>
+              <a href="/book-iwata/dist/开始思辨.html" class="btn-enter" id="btn-enter-iwata" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); border-color: rgba(74, 222, 128, 0.4);">
+                <span>进入思辨室</span>
+                <span style="font-size:16px;">➔</span>
+              </a>
+              <a href="/book-iwata/dist/index.html" class="btn-sub" title="开发者模块化视图">
+                模块视图
+              </a>
             </div>
           </div>
         </article>
@@ -1265,6 +1269,38 @@
       const enterBtn = document.querySelector('#btn-enter-schell');
       if (completedChapters > 0) {
         enterBtn.querySelector('span:first-child').textContent = '继续学习';
+      }
+
+      // Read Iwata progress
+      try {
+        const iwataRaw = localStorage.getItem('book-to-play:iwata:workbook:v1');
+        if (iwataRaw) {
+          const iwataData = JSON.parse(iwataRaw);
+          const completedMap = iwataData.completed || {};
+          let iwataUnitsDone = Object.values(completedMap).filter(Boolean).length;
+          
+          // Count completed chapters (all sections done)
+          let iwataDoneChapters = 0;
+          for (let ch = 1; ch <= 7; ch++) {
+            const chSections = Object.keys(completedMap).filter(k => k.startsWith(`iwata-${ch}-`));
+            if (chSections.length > 0 && chSections.every(k => completedMap[k])) {
+              iwataDoneChapters++;
+            }
+          }
+
+          let iwataPct = Math.min(100, Math.round((iwataUnitsDone / 58) * 100));
+
+          const iTxt = document.querySelector('#iwata-progress-text');
+          const iPct = document.querySelector('#iwata-progress-pct');
+          const iBar = document.querySelector('#iwata-progress-bar');
+          const iEnter = document.querySelector('#btn-enter-iwata');
+          if (iTxt) iTxt.textContent = `学习进度：${iwataDoneChapters} / 7 章完结 (${iwataUnitsDone}/58小节)`;
+          if (iPct) iPct.textContent = `${iwataPct}%`;
+          if (iBar) iBar.style.width = `${iwataPct}%`;
+          if (iEnter && iwataUnitsDone > 0) iEnter.querySelector('span:first-child').textContent = '继续思辨';
+        }
+      } catch (err) {
+        console.warn('读取岩田先生进度失败', err);
       }
     })();
   </script>
