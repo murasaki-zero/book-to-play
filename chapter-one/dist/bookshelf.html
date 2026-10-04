@@ -1057,6 +1057,22 @@
       <button class="dialog-close" onclick="document.querySelector('#lan-dialog').close()">×</button>
     </div>
     <div class="dialog-body">
+      <!-- Service Live Status Banner -->
+      <div id="lan-status-banner" style="display:flex; justify-content:space-between; align-items:center; background:rgba(30,41,59,0.8); border:1px solid var(--card-border); padding:12px 16px; border-radius:8px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="lan-status-dot" style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#94a3b8;"></span>
+          <strong id="lan-status-text" style="font-size:13.5px; color:var(--ink);">正在检测服务状态……</strong>
+        </div>
+        <div id="lan-status-actions" style="display:flex; gap:8px;">
+          <button id="btn-lan-refresh" onclick="checkLanStatus()" style="background:var(--bg-panel); border:1px solid var(--card-border); color:var(--ink); padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
+            🔄 重新检测
+          </button>
+          <button id="btn-lan-stop" onclick="stopLanService()" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#f87171; padding:5px 10px; border-radius:6px; font-size:12px; cursor:pointer;">
+            ⏹ 停止服务
+          </button>
+        </div>
+      </div>
+
       <p style="font-size: 13.5px; color: var(--ink-dim); line-height: 1.7; margin-bottom: 16px;">
         只要您的 iPad 或手机与此电脑连接在<strong>同一个 Wi-Fi 网络</strong>，在移动设备浏览器中输入以下地址即可同步阅读与思辨：
       </p>
@@ -1068,7 +1084,7 @@
       <div style="background:var(--bg-panel-sub); border:1px solid var(--card-border); border-radius:8px; padding:14px; font-size:12.5px; color:var(--ink-muted); line-height:1.6;">
         <strong style="color:var(--accent-orange); display:block; margin-bottom:4px;">💡 连接贴士：</strong>
         1. 确保 iPad / 手机已连接到相同的 Wi-Fi 路由器。<br>
-        2. 如果无法打开，请检查 Mac 的【系统设置】->【网络】->【防火墙】是否允许传入连接。<br>
+        2. 若服务未开启，可在根目录双击运行 <code>启动练习室(局域网共享).command</code>，或在终端执行 <code>npm run serve</code>。<br>
         3. 所有学习进度与心得保存在各自设备的本地浏览器缓存中。
       </div>
     </div>
@@ -1337,55 +1353,104 @@
     // LAN / Mobile Dialog handler
     async function openLanDialog() {
       const modal = document.querySelector('#lan-dialog');
-      const container = document.querySelector('#lan-urls-container');
       modal.showModal();
+      await checkLanStatus();
+    }
 
-      try {
-        const res = await fetch('/api/network-info');
-        if (res.ok) {
-          const data = await res.json();
-          const port = data.port || 4173;
-          const lanIps = data.lanIps || [];
+    async function checkLanStatus() {
+      const dot = document.querySelector('#lan-status-dot');
+      const text = document.querySelector('#lan-status-text');
+      const stopBtn = document.querySelector('#btn-lan-stop');
+      const container = document.querySelector('#lan-urls-container');
 
-          if (lanIps.length === 0) {
-            container.innerHTML = `
-              <div style="background:var(--bg-panel-sub); padding:12px; border-radius:6px; font-size:13px; color:#fbbf24;">
-                ⚠️ 当前未检测到外部局域网 IPv4。请检查 Mac 是否已接入 Wi-Fi。
-              </div>
-            `;
-            return;
+      dot.style.background = '#94a3b8';
+      text.textContent = '正在探测局域网服务……';
+      text.style.color = 'var(--ink)';
+
+      // Detect via localhost port 4173 API
+      const endpoints = [
+        '/api/network-info',
+        'http://localhost:4173/api/network-info',
+        'http://127.0.0.1:4173/api/network-info'
+      ];
+
+      let data = null;
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-cache', mode: 'cors' });
+          if (res.ok) {
+            data = await res.json();
+            break;
           }
-
-          container.innerHTML = lanIps.map(net => {
-            const url = `http://${net.address}:${port}`;
-            return `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel-sub); border:1px solid var(--card-border); padding:10px 14px; border-radius:8px; gap:12px;">
-                <div>
-                  <div style="font-family:var(--font-mono); font-size:14px; font-weight:600; color:#38bdf8; word-break:break-all;">${url}</div>
-                  <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">网卡接口：${net.iface}</div>
-                </div>
-                <button onclick="navigator.clipboard.writeText('${url}').then(() => showToast('已复制局域网网址！'))" style="background:var(--bg); border:1px solid var(--accent-blue); color:var(--accent-blue); padding:6px 12px; border-radius:6px; font-size:12px; cursor:pointer; white-space:nowrap;">
-                  复制网址
-                </button>
-              </div>
-            `;
-          }).join('');
-          return;
-        }
-      } catch (err) {
-        // Fallback if accessed via file:// or static file without node server
+        } catch (_) {}
       }
 
-      // Fallback display if not using Node.js API
-      const curHost = window.location.hostname;
-      const curPort = window.location.port || '4173';
-      const fallbackUrl = `http://${curHost === 'localhost' || curHost === '127.0.0.1' ? '<Mac的局域网IP>' : curHost}:${curPort}`;
-      container.innerHTML = `
-        <div style="background:var(--bg-panel-sub); border:1px solid var(--card-border); padding:12px; border-radius:8px; font-size:13px;">
-          <div style="color:var(--ink-dim); margin-bottom:6px;">请在终端运行 <code>npm run serve</code>，或在终端查看 Mac 局域网 IP：</div>
-          <div style="font-family:var(--font-mono); font-size:13.5px; color:#38bdf8;">${fallbackUrl}</div>
-        </div>
-      `;
+      if (data && data.status === 'running') {
+        dot.style.background = '#22c55e';
+        text.textContent = '● 局域网共享服务运行中 (0.0.0.0:' + data.port + ')';
+        text.style.color = '#4ade80';
+        stopBtn.style.display = 'inline-block';
+
+        const lanIps = data.lanIps || [];
+        if (lanIps.length === 0) {
+          container.innerHTML = `
+            <div style="background:var(--bg-panel-sub); padding:12px; border-radius:6px; font-size:13px; color:#fbbf24;">
+              ⚠️ 当前未检测到外部局域网 IPv4。请检查 Mac 是否已接入 Wi-Fi。
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = lanIps.map(net => {
+          const url = `http://${net.address}:${data.port}`;
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel-sub); border:1px solid rgba(56,189,248,0.3); padding:12px 14px; border-radius:8px; gap:12px;">
+              <div>
+                <div style="font-family:var(--font-mono); font-size:15px; font-weight:600; color:#38bdf8; word-break:break-all;">${url}</div>
+                <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">网卡接口：${net.iface} (同Wi-Fi设备可直接访问)</div>
+              </div>
+              <button onclick="navigator.clipboard.writeText('${url}').then(() => showToast('已复制局域网网址！'))" style="background:var(--bg); border:1px solid var(--accent-blue); color:var(--accent-blue); padding:7px 14px; border-radius:6px; font-size:12.5px; cursor:pointer; white-space:nowrap; font-weight:500;">
+                复制网址
+              </button>
+            </div>
+          `;
+        }).join('');
+      } else {
+        dot.style.background = '#ef4444';
+        text.textContent = '○ 局域网服务未开启';
+        text.style.color = '#f87171';
+        stopBtn.style.display = 'none';
+
+        const curHost = window.location.hostname;
+        const curPort = window.location.port || '4173';
+        const displayIp = curHost && curHost !== 'localhost' && curHost !== '127.0.0.1' ? curHost : '192.168.10.202';
+        const lanUrl = `http://${displayIp}:${curPort}`;
+
+        container.innerHTML = `
+          <div style="background:var(--bg-panel-sub); border:1px dashed var(--accent-orange); padding:16px; border-radius:8px; font-size:13px;">
+            <div style="font-weight:600; color:var(--accent-orange); margin-bottom:6px;">🚀 如何开启服务：</div>
+            <div style="color:var(--ink-dim); line-height:1.6; margin-bottom:12px;">
+              方式 1（双击即开）：在项目文件夹中双击运行 <strong><code>启动练习室(局域网共享).command</code></strong><br>
+              方式 2（终端运行）：在终端输入 <strong><code>npm run serve</code></strong>
+            </div>
+            <div style="border-top:1px dashed var(--card-border); padding-top:10px; font-size:12px; color:var(--ink-muted);">
+              开启后，iPad 即可访问检测到的预分配地址：
+              <strong style="color:var(--accent-blue); font-family:var(--font-mono); display:inline-block; margin-left:4px;">${lanUrl}</strong>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    async function stopLanService() {
+      if (!confirm('确定要在电脑上停止局域网共享服务吗？停止后其他设备将无法访问。')) return;
+      try {
+        await fetch('http://localhost:4173/api/shutdown', { method: 'POST', mode: 'cors' });
+        showToast('局域网共享服务已关闭！');
+      } catch (_) {
+        showToast('已发送停止请求');
+      }
+      setTimeout(checkLanStatus, 800);
     }
   </script>
 </body>

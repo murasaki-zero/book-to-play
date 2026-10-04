@@ -27,13 +27,35 @@ function getLanIps() {
 const server = http.createServer(async (req, res) => {
   try {
     const parsedUrl = new URL(req.url, 'http://localhost');
+    // Enable CORS for API calls if accessed via file: or other origins
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
     const rawName = decodeURIComponent(parsedUrl.pathname);
 
     // API endpoint to return local network addresses for the UI
     if (rawName === '/api/network-info') {
       const lanIps = getLanIps();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
-      res.end(JSON.stringify({ port, lanIps }));
+      res.end(JSON.stringify({ status: 'running', port, lanIps }));
+      return;
+    }
+
+    // API endpoint to gracefully shutdown the server from UI
+    if (rawName === '/api/shutdown' && req.method === 'POST') {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ status: 'stopping' }));
+      console.log('收到前端关闭指令，正在停止局域网服务...');
+      setTimeout(() => {
+        server.close(() => process.exit(0));
+      }, 500);
       return;
     }
 
