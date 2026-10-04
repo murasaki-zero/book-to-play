@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +9,10 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <style>
     :root {
+      /* Dark Theme */
       --bg: #10151c;
       --bg-panel: #18202a;
+      --bg-panel-sub: #131a23;
       --shelf-wood: #221a14;
       --shelf-wood-edge: #423023;
       --shelf-highlight: #6e513a;
@@ -22,35 +24,64 @@
       --accent-blue: #368cd6;
       --accent-blue-soft: rgba(54, 140, 214, 0.15);
       --card-border: rgba(148, 167, 184, 0.16);
-      --font-serif: "Songti SC", "STSong", "SimSun", Georgia, serif;
-      --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(230, 126, 60, 0.15);
+      --font-serif: "Songti SC", "SimSun", "STSong", "FangSong", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Segoe UI Mono", "Courier New", monospace;
     }
+
+    [data-theme="light"] {
+      /* Light Theme */
+      --bg: #f4f7f9;
+      --bg-panel: #ffffff;
+      --bg-panel-sub: #f0f4f8;
+      --shelf-wood: #a67c52;
+      --shelf-wood-edge: #c49a6c;
+      --shelf-highlight: #e0be95;
+      --ink: #1b2836;
+      --ink-dim: #4b6173;
+      --ink-muted: #7b91a3;
+      --accent-orange: #d46430;
+      --accent-orange-soft: rgba(212, 100, 48, 0.12);
+      --accent-blue: #226294;
+      --accent-blue-soft: rgba(34, 98, 148, 0.12);
+      --card-border: #dbe4eb;
+      --card-shadow: 0 8px 24px rgba(20, 46, 67, 0.08);
+      --card-hover-shadow: 0 16px 36px rgba(20, 46, 67, 0.14), 0 0 20px rgba(212, 100, 48, 0.12);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-blue) var(--bg);
+    }
     body {
       background: var(--bg);
       background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(54, 140, 214, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 85% 30%, rgba(230, 126, 60, 0.06) 0%, transparent 45%);
+        radial-gradient(ellipse at 50% 0%, var(--accent-blue-soft) 0%, transparent 60%),
+        radial-gradient(circle at 85% 30%, var(--accent-orange-soft) 0%, transparent 45%);
       color: var(--ink);
       font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       line-height: 1.6;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
     a { color: inherit; text-decoration: none; }
 
     /* Header */
     .shelf-header {
-      padding: 38px 48px 24px;
+      padding: 34px 48px 22px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
       max-width: 1400px;
       width: 100%;
       margin: 0 auto;
+      gap: 20px;
     }
     .brand-wrap {
       display: flex;
@@ -67,14 +98,14 @@
       place-items: center;
       font-size: 22px;
       color: #f4a575;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     }
     .brand-titles h1 {
       font-family: var(--font-serif);
-      font-size: 26px;
+      font-size: 25px;
       letter-spacing: 0.04em;
       font-weight: 600;
-      color: #fff;
+      color: var(--ink);
     }
     .brand-titles p {
       font-size: 13px;
@@ -82,11 +113,19 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-family: var(--font-mono);
-      margin-top: 2px;
+      margin-top: 1px;
     }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* Stats bar */
     .shelf-stats-bar {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       align-items: center;
     }
     .shelf-stat {
@@ -94,7 +133,7 @@
     }
     .shelf-stat .num {
       font-family: var(--font-mono);
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 600;
       color: var(--ink);
     }
@@ -103,18 +142,43 @@
       color: var(--ink-muted);
     }
 
+    /* Theme Toggle & Git Log Buttons */
+    .btn-icon-nav {
+      background: var(--bg-panel);
+      border: 1px solid var(--card-border);
+      color: var(--ink);
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .btn-icon-nav:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+    .btn-icon-nav:active {
+      transform: translateY(1px);
+    }
+
     /* Main Container */
     .shelf-container {
       max-width: 1400px;
       width: 100%;
       margin: 0 auto;
-      padding: 36px 48px 80px;
+      padding: 34px 48px 80px;
       flex: 1;
     }
 
     .shelf-intro {
       margin-bottom: 36px;
-      max-width: 760px;
+      max-width: 820px;
     }
     .shelf-intro .tagline {
       display: inline-flex;
@@ -133,7 +197,7 @@
       font-size: clamp(26px, 2.6vw, 36px);
       font-weight: 600;
       line-height: 1.35;
-      color: #fff;
+      color: var(--ink);
       margin-bottom: 10px;
     }
     .shelf-intro p {
@@ -162,7 +226,7 @@
       content: "";
       flex: 1;
       height: 1px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--card-border);
     }
 
     /* Book Rack Grid */
@@ -184,8 +248,8 @@
       border-top: 2px solid var(--shelf-highlight);
       border-radius: 3px;
       box-shadow: 
-        0 14px 28px rgba(0, 0, 0, 0.7),
-        0 4px 10px rgba(0, 0, 0, 0.5);
+        0 14px 28px rgba(0, 0, 0, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.2);
     }
     .shelf-plank::after {
       content: "";
@@ -194,7 +258,7 @@
       left: 0;
       right: 0;
       height: 12px;
-      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.45) 100%);
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%);
       pointer-events: none;
     }
 
@@ -208,87 +272,54 @@
       flex-direction: column;
       position: relative;
       transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: var(--card-shadow);
     }
     .book-card:hover {
       transform: translateY(-6px);
-      border-color: rgba(230, 126, 60, 0.45);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(230, 126, 60, 0.15);
+      border-color: rgba(230, 126, 60, 0.5);
+      box-shadow: var(--card-hover-shadow);
     }
 
     /* Book Cover & Spine Area */
     .book-showcase {
-      padding: 26px 26px 20px;
+      padding: 24px 24px 20px;
       display: flex;
-      gap: 22px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 20px;
+      background: linear-gradient(180deg, var(--accent-blue-soft) 0%, transparent 100%);
+      border-bottom: 1px solid var(--card-border);
     }
 
-    /* 3D Book Visual */
-    .book-3d {
-      width: 110px;
-      height: 156px;
+    /* Book Real Cover Image Visual */
+    .book-cover-wrap {
+      width: 108px;
+      height: 154px;
       flex-shrink: 0;
       border-radius: 6px 10px 10px 6px;
       position: relative;
       box-shadow: 
-        5px 8px 20px rgba(0, 0, 0, 0.6),
-        -2px 0 6px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(135deg, #18334b 0%, #0d1e2d 100%);
+        5px 8px 20px rgba(0, 0, 0, 0.45),
+        -2px 0 6px rgba(0, 0, 0, 0.25);
+      background: #1c2733;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 14px 12px;
-      border-left: 5px solid #2d5578;
+      border-left: 4px solid #2d5578;
     }
-    .book-3d::before {
+    .book-cover-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .book-card:hover .book-cover-wrap img {
+      transform: scale(1.04);
+    }
+    .book-cover-wrap::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, transparent 10%, rgba(0,0,0,0.2) 90%, rgba(255,255,255,0.05) 100%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.2) 0%, transparent 12%, rgba(0,0,0,0.25) 90%, rgba(255,255,255,0.1) 100%);
       pointer-events: none;
-    }
-    .book-3d .cover-badge {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      color: #9cb8cf;
-      text-transform: uppercase;
-      font-family: var(--font-mono);
-    }
-    .book-3d .cover-title {
-      font-family: var(--font-serif);
-      font-size: 15px;
-      color: #fff;
-      font-weight: 600;
-      line-height: 1.3;
-      margin-top: 6px;
-    }
-    .book-3d .cover-author {
-      font-size: 10px;
-      color: #bad0df;
-      margin-top: auto;
-    }
-    .book-3d .lens-motif {
-      width: 32px;
-      height: 32px;
-      border: 2px dashed rgba(230, 126, 60, 0.6);
-      border-radius: 50%;
-      align-self: flex-end;
-      margin-top: 6px;
-      position: relative;
-    }
-    .book-3d .lens-motif::after {
-      content: "";
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #e67e3c;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      z-index: 2;
     }
 
     /* Book Metadata */
@@ -303,7 +334,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       flex-wrap: wrap;
     }
     .status-pill {
@@ -314,37 +345,40 @@
       font-weight: 500;
     }
     .status-pill.ready {
-      background: rgba(38, 117, 95, 0.25);
+      background: rgba(38, 117, 95, 0.15);
+      color: #219672;
+      border: 1px solid rgba(38, 117, 95, 0.3);
+    }
+    [data-theme="dark"] .status-pill.ready {
       color: #5ed6b0;
-      border: 1px solid rgba(94, 214, 176, 0.3);
     }
     .status-pill.plan {
-      background: rgba(255, 255, 255, 0.07);
+      background: var(--bg-panel-sub);
       color: var(--ink-dim);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--card-border);
     }
     .book-title-main {
       font-family: var(--font-serif);
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 600;
-      color: #fff;
+      color: var(--ink);
       line-height: 1.4;
       margin-bottom: 4px;
     }
     .book-subinfo {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--ink-dim);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .book-spec-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding: 10px 12px;
-      background: rgba(0, 0, 0, 0.25);
+      padding: 9px 10px;
+      background: var(--bg-panel-sub);
       border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
       text-align: center;
     }
     .book-spec-item .val {
@@ -361,14 +395,14 @@
 
     /* Card Progress & Actions */
     .book-card-body {
-      padding: 20px 26px 24px;
+      padding: 18px 24px 22px;
       display: flex;
       flex-direction: column;
       flex: 1;
       justify-content: space-between;
     }
     .progress-section {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .progress-header {
       display: flex;
@@ -379,7 +413,7 @@
     }
     .progress-bar-bg {
       height: 6px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--card-border);
       border-radius: 3px;
       overflow: hidden;
     }
@@ -399,8 +433,8 @@
     .btn-enter {
       flex: 1;
       background: linear-gradient(135deg, #256ba1 0%, #1a4f78 100%);
-      color: #fff;
-      padding: 12px 18px;
+      color: #fff !important;
+      padding: 11px 18px;
       border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
@@ -414,16 +448,15 @@
     }
     .btn-enter:hover {
       background: linear-gradient(135deg, #2f7ebc 0%, #1f5b8a 100%);
-      color: #fff;
     }
     .btn-enter:active {
       transform: translateY(1px);
     }
     .btn-sub {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--bg-panel-sub);
+      border: 1px solid var(--card-border);
       color: var(--ink-dim);
-      padding: 12px 16px;
+      padding: 11px 14px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 500;
@@ -431,101 +464,49 @@
       transition: background 0.15s, color 0.15s;
     }
     .btn-sub:hover {
-      background: rgba(255, 255, 255, 0.12);
-      color: #fff;
+      color: var(--ink);
+      border-color: var(--accent-blue);
     }
 
     /* Empty / Upcoming Slot Card */
     .book-card.slot {
-      border: 1.5px dashed rgba(255, 255, 255, 0.14);
-      background: rgba(24, 32, 42, 0.35);
+      border: 1.5px dashed var(--card-border);
+      background: var(--bg-panel);
       box-shadow: none;
-      cursor: pointer;
     }
     .book-card.slot:hover {
-      border-color: rgba(54, 140, 214, 0.45);
-      background: rgba(24, 32, 42, 0.6);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
-    }
-    .slot-content {
-      padding: 40px 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      justify-content: center;
-      height: 100%;
-    }
-    .slot-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      display: grid;
-      place-items: center;
-      font-size: 26px;
-      color: var(--ink-muted);
-      margin-bottom: 16px;
-      transition: all 0.2s ease;
-    }
-    .book-card.slot:hover .slot-icon {
-      background: var(--accent-blue-soft);
       border-color: var(--accent-blue);
-      color: var(--accent-blue);
-      transform: scale(1.06);
-    }
-    .slot-title {
-      font-family: var(--font-serif);
-      font-size: 19px;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-    .slot-desc {
-      font-size: 13px;
-      color: var(--ink-muted);
-      line-height: 1.7;
-      max-width: 260px;
-      margin-bottom: 20px;
-    }
-    .slot-btn {
-      font-size: 12px;
-      font-family: var(--font-mono);
-      color: var(--accent-blue);
-      border: 1px solid rgba(54, 140, 214, 0.3);
-      padding: 6px 14px;
-      border-radius: 20px;
-      background: var(--accent-blue-soft);
+      transform: translateY(-4px);
+      box-shadow: var(--card-shadow);
     }
 
-    /* Modal / Dialog */
+    /* Commit History Modal / Drawer */
     dialog {
       padding: 0;
-      max-width: 540px;
+      max-width: 620px;
       width: calc(100% - 32px);
       margin: auto;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
-      background: #18222d;
+      background: var(--bg-panel);
       color: var(--ink);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
     }
     dialog::backdrop {
-      background: rgba(5, 10, 16, 0.75);
+      background: rgba(5, 10, 16, 0.7);
       backdrop-filter: blur(4px);
     }
     .dialog-header {
-      padding: 24px 28px 16px;
+      padding: 22px 28px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--card-border);
     }
     .dialog-header h3 {
       font-family: var(--font-serif);
       font-size: 20px;
-      color: #fff;
+      color: var(--ink);
     }
     .dialog-close {
       background: none;
@@ -534,23 +515,64 @@
       color: var(--ink-muted);
       cursor: pointer;
     }
-    .dialog-close:hover { color: #fff; }
+    .dialog-close:hover { color: var(--ink); }
     .dialog-body {
-      padding: 24px 28px 30px;
+      padding: 22px 28px 30px;
       font-size: 14px;
       line-height: 1.8;
       color: var(--ink-dim);
+      max-height: 70vh;
+      overflow-y: auto;
     }
-    .dialog-body p { margin-bottom: 14px; }
-    .dialog-body ul {
-      margin: 12px 0 16px 20px;
+
+    /* Commit List styling */
+    .commit-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .commit-item {
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: var(--bg-panel-sub);
+      border: 1px solid var(--card-border);
+    }
+    .commit-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .commit-hash {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .commit-date {
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+    }
+    .commit-msg {
+      font-size: 13.5px;
       color: var(--ink);
+      line-height: 1.6;
     }
-    .dialog-body li { margin-bottom: 6px; }
+    .commit-signer {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--accent-orange);
+      font-family: var(--font-mono);
+      display: inline-block;
+    }
 
     /* Footer */
     .shelf-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid var(--card-border);
       padding: 28px 48px;
       text-align: center;
       font-size: 13px;
@@ -559,7 +581,8 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .shelf-header { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .shelf-header { padding: 22px 20px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .header-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; }
       .shelf-stats-bar { width: 100%; justify-content: space-between; }
       .shelf-stat { text-align: left; }
       .shelf-container { padding: 24px 20px 60px; }
@@ -580,19 +603,34 @@
         <p>Interactive Book Studio</p>
       </div>
     </div>
-    <div class="shelf-stats-bar">
-      <div class="shelf-stat">
-        <div class="num" id="stat-books-count">1</div>
-        <div class="label">已上架图书</div>
+
+    <div class="header-controls">
+      <div class="shelf-stats-bar">
+        <div class="shelf-stat">
+          <div class="num" id="stat-books-count">4</div>
+          <div class="label">书架藏书</div>
+        </div>
+        <div class="shelf-stat">
+          <div class="num" id="stat-chapters-count">34</div>
+          <div class="label">就绪章节</div>
+        </div>
+        <div class="shelf-stat">
+          <div class="num" id="stat-notes-count">0</div>
+          <div class="label">已记笔记</div>
+        </div>
       </div>
-      <div class="shelf-stat">
-        <div class="num" id="stat-chapters-count">34</div>
-        <div class="label">互动章节</div>
-      </div>
-      <div class="shelf-stat">
-        <div class="num" id="stat-notes-count">0</div>
-        <div class="label">已记录笔记</div>
-      </div>
+
+      <!-- Git History Button -->
+      <button class="btn-icon-nav" id="btn-show-git" onclick="document.querySelector('#git-dialog').showModal()" title="查看GitHub提交记录">
+        <span>🕒</span>
+        <span>更新动态</span>
+      </button>
+
+      <!-- Theme Mode Toggle -->
+      <button class="btn-icon-nav" id="btn-theme-toggle" title="切换浅色/深色模式">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-text">浅色</span>
+      </button>
     </div>
   </header>
 
@@ -606,19 +644,14 @@
 
     <!-- First Shelf Rack: Core Game Design Books -->
     <section class="shelf-section">
-      <div class="shelf-section-title">01 · 正在阅读与研习的书目</div>
+      <div class="shelf-section-title">01 · 正在研读与交互学习</div>
 
       <div class="books-grid">
         <!-- Book 1: The Art of Game Design (2nd Edition) -->
         <article class="book-card" id="card-schell">
           <div class="book-showcase">
-            <div class="book-3d">
-              <span class="cover-badge">Schell #2</span>
-              <div class="book-title-cover">
-                <div class="cover-title">游戏设计<br>艺术</div>
-              </div>
-              <div class="lens-motif"></div>
-              <span class="cover-author">Jesse Schell 著</span>
+            <div class="book-cover-wrap">
+              <img src="assets/covers/schell-art-of-game-design.jpg" alt="游戏设计艺术封面" onerror="this.style.display='none'">
             </div>
 
             <div class="book-details">
@@ -628,7 +661,7 @@
                   <span class="status-pill plan">第 2 版</span>
                 </div>
                 <h3 class="book-title-main">游戏设计艺术（第 2 版）</h3>
-                <p class="book-subinfo">The Art of Game Design: A Book of Lenses</p>
+                <p class="book-subinfo">The Art of Game Design · Jesse Schell 著</p>
               </div>
 
               <div class="book-spec-grid">
@@ -651,7 +684,7 @@
           <div class="book-card-body">
             <div class="progress-section">
               <div class="progress-header">
-                <span id="schell-progress-text">学习进度：0 / 34 章</span>
+                <span id="schell-progress-text">学习进度：0 / 34 章完结</span>
                 <strong id="schell-progress-pct" style="color:var(--accent-orange); font-family:var(--font-mono);">0%</strong>
               </div>
               <div class="progress-bar-bg">
@@ -671,13 +704,56 @@
           </div>
         </article>
 
-        <!-- Book Slot 2: Reserve Slot for Next Book -->
-        <article class="book-card slot" onclick="document.querySelector('#slot-dialog').showModal()">
-          <div class="slot-content">
-            <div class="slot-icon">+</div>
-            <h3 class="slot-title">上架一本新书</h3>
-            <p class="slot-desc">准备将下一本游戏学经典（如《游戏学：体验、规则与意义》或你的专属阅读清单）转化为互动练习室。</p>
-            <span class="slot-btn">查看扩展指南 ↗</span>
+        <!-- Book 2: Level Up! (Scott Rogers) -->
+        <article class="book-card">
+          <div class="book-showcase">
+            <div class="book-cover-wrap">
+              <img src="assets/covers/level-up-rogers.jpg" alt="通关！游戏设计之道封面">
+            </div>
+
+            <div class="book-details">
+              <div>
+                <div class="book-badge-row">
+                  <span class="status-pill plan">本地原书已就绪</span>
+                  <span class="status-pill plan">第 2 版</span>
+                </div>
+                <h3 class="book-title-main">通关！游戏设计之道</h3>
+                <p class="book-subinfo">Level Up! · 斯科特·罗杰斯 著</p>
+              </div>
+
+              <div class="book-spec-grid">
+                <div class="book-spec-item">
+                  <div class="val">关卡</div>
+                  <div class="lbl">实战图纸</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">机制</div>
+                  <div class="lbl">操作视角</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">敌人</div>
+                  <div class="lbl">战斗原型</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="book-card-body">
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>书架状态：待转化练习室</span>
+                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">规划中</strong>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 15%; background: var(--card-border);"></div>
+              </div>
+            </div>
+
+            <div class="btn-action-group">
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
+                查看待办流水线 ↗
+              </button>
+            </div>
           </div>
         </article>
       </div>
@@ -686,35 +762,124 @@
       <div class="shelf-plank"></div>
     </section>
 
-    <!-- Upcoming Collection Section -->
+    <!-- Second Shelf Rack: Collection & Expansion Books -->
     <section class="shelf-section">
-      <div class="shelf-section-title">02 · 筹备书架与研读规划</div>
+      <div class="shelf-section-title">02 · 本地书库藏书与扩展书目</div>
 
       <div class="books-grid">
-        <!-- Upcoming 1 -->
-        <article class="book-card slot" style="cursor:default;">
-          <div class="slot-content" style="padding:32px 24px;">
-            <div class="status-pill plan" style="margin-bottom:12px;">待入库 · 游戏规则论</div>
-            <h3 class="slot-title" style="font-size:17px;">游戏学：体验、规则与意义</h3>
-            <p class="slot-desc" style="font-size:12px; margin-bottom:0;">Rules of Play: Game Design Fundamentals · Salen & Zimmerman 著</p>
+        <!-- Book 3: 236 Game Design Tips -->
+        <article class="book-card">
+          <div class="book-showcase">
+            <div class="book-cover-wrap">
+              <img src="assets/covers/game-design-236-tips.jpg" alt="游戏设计的236个技巧封面">
+            </div>
+
+            <div class="book-details">
+              <div>
+                <div class="book-badge-row">
+                  <span class="status-pill plan">本地原书已就绪</span>
+                  <span class="status-pill plan">技巧库</span>
+                </div>
+                <h3 class="book-title-main">游戏设计的236个技巧</h3>
+                <p class="book-subinfo">游戏机制、关卡与镜头窍门 · [日]大野功二 著</p>
+              </div>
+
+              <div class="book-spec-grid">
+                <div class="book-spec-item">
+                  <div class="val">236</div>
+                  <div class="lbl">实战诀窍</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">镜头</div>
+                  <div class="lbl">操作手感</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">微调</div>
+                  <div class="lbl">打击反馈</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="book-card-body">
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>状态：已检索到 EPUB 原始文件</span>
+                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">可制作</strong>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 10%; background: var(--card-border);"></div>
+              </div>
+            </div>
+
+            <div class="btn-action-group">
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
+                准备拆解章节 ↗
+              </button>
+            </div>
           </div>
         </article>
 
-        <!-- Upcoming 2 -->
-        <article class="book-card slot" style="cursor:default;">
-          <div class="slot-content" style="padding:32px 24px;">
-            <div class="status-pill plan" style="margin-bottom:12px;">待入库 · 游戏关卡与实践</div>
-            <h3 class="slot-title" style="font-size:17px;">通关！游戏设计之道</h3>
-            <p class="slot-desc" style="font-size:12px; margin-bottom:0;">Level Up! The Guide to Great Video Game Design · Scott Rogers 著</p>
+        <!-- Book 4: Satoru Iwata (Ask Iwata) -->
+        <article class="book-card">
+          <div class="book-showcase">
+            <div class="book-cover-wrap">
+              <img src="assets/covers/mr-iwata.jpg" alt="岩田先生封面">
+            </div>
+
+            <div class="book-details">
+              <div>
+                <div class="book-badge-row">
+                  <span class="status-pill plan">本地原书已就绪</span>
+                  <span class="status-pill plan">哲学随笔</span>
+                </div>
+                <h3 class="book-title-main">岩田先生</h3>
+                <p class="book-subinfo">任天堂传奇社长如是说 · HOBO日刊ITOI新闻</p>
+              </div>
+
+              <div class="book-spec-grid">
+                <div class="book-spec-item">
+                  <div class="val">哲学</div>
+                  <div class="lbl">玩者之心</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">领导</div>
+                  <div class="lbl">组织沟通</div>
+                </div>
+                <div class="book-spec-item">
+                  <div class="val">创意</div>
+                  <div class="lbl">惊喜来源</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="book-card-body">
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>状态：已检索到 EPUB 原始文件</span>
+                <strong style="color:var(--ink-muted); font-family:var(--font-mono);">待转化</strong>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: 10%; background: var(--card-border);"></div>
+              </div>
+            </div>
+
+            <div class="btn-action-group">
+              <button class="btn-sub" style="width:100%; text-align:center;" onclick="document.querySelector('#slot-dialog').showModal()">
+                心法研读模式 ↗
+              </button>
+            </div>
           </div>
         </article>
 
-        <!-- Upcoming 3 -->
-        <article class="book-card slot" style="cursor:default;">
-          <div class="slot-content" style="padding:32px 24px;">
-            <div class="status-pill plan" style="margin-bottom:12px;">构想中 · 叙事与情感</div>
-            <h3 class="slot-title" style="font-size:17px;">体验的引擎：游戏叙事设计</h3>
-            <p class="slot-desc" style="font-size:12px; margin-bottom:0;">将交互式情节、分支叙事与角色弧光转化为情境实验练习室。</p>
+        <!-- Book Slot 5: Reserve Slot for Custom Book -->
+        <article class="book-card slot" onclick="document.querySelector('#slot-dialog').showModal()" style="cursor:pointer;">
+          <div style="padding: 40px 24px; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; height: 100%;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--bg-panel-sub); border: 1px solid var(--card-border); display: grid; place-items: center; font-size: 24px; color: var(--ink-muted); margin-bottom: 14px;">+</div>
+            <h3 style="font-family: var(--font-serif); font-size: 18px; color: var(--ink); margin-bottom: 6px;">上架更多书籍</h3>
+            <p style="font-size: 12px; color: var(--ink-muted); line-height: 1.6; max-width: 240px; margin-bottom: 16px;">将任意游戏设计或交互书籍放入工作区，启动转化流。</p>
+            <span style="font-size: 11px; font-family: var(--font-mono); color: var(--accent-blue); border: 1px solid var(--accent-blue); padding: 5px 12px; border-radius: 20px;">查看规范 ↗</span>
           </div>
         </article>
       </div>
@@ -723,18 +888,31 @@
     </section>
   </main>
 
+  <!-- Git Commit History Dialog -->
+  <dialog id="git-dialog">
+    <div class="dialog-header">
+      <h3>GitHub 提交演进动态</h3>
+      <button class="dialog-close" onclick="document.querySelector('#git-dialog').close()">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="commit-timeline" id="commit-list">
+        <!-- Commits injected by JS -->
+      </div>
+    </div>
+  </dialog>
+
   <!-- Dialog for Adding New Books -->
   <dialog id="slot-dialog">
     <div class="dialog-header">
-      <h3>如何为书架添加新书？</h3>
+      <h3>如何为书架制作互动练习室？</h3>
       <button class="dialog-close" onclick="document.querySelector('#slot-dialog').close()">×</button>
     </div>
     <div class="dialog-body">
       <p>“书中练习室”遵循纯本地、免外部依赖、高互动的原则：</p>
-      <ul>
-        <li><strong>原书依据</strong>：对照本地书籍扫描页或原文，提炼核心概念与对应章节透镜。</li>
-        <li><strong>互动实验</strong>：不套用单调的多选题，为每个关键概念设计一个可调参数、可观察结果的交互沙盒。</li>
-        <li><strong>独立存储</strong>：每个书目拥有独立的存储命名空间，学习记录与笔记全部妥善保存在你的浏览器中。</li>
+      <ul style="margin: 12px 0 16px 20px; color: var(--ink);">
+        <li style="margin-bottom:6px;"><strong>原书依据</strong>：对照本地书籍扫描页或原文，提炼核心概念与对应章节透镜。</li>
+        <li style="margin-bottom:6px;"><strong>互动实验</strong>：不套用单调的多选题，为每个关键概念设计一个可调参数、可观察结果的交互沙盒。</li>
+        <li style="margin-bottom:6px;"><strong>独立存储</strong>：每个书目拥有独立的存储命名空间，学习记录与笔记全部妥善保存在你的浏览器中。</li>
       </ul>
       <p>目前《游戏设计艺术（第 2 版）》已完整完工 34 章共 136 个单元。准备好接入下一本好书时，可随时发起对应章节的制作流水线！</p>
     </div>
@@ -746,6 +924,73 @@
   </footer>
 
   <script>
+    // Git commit history data
+    const GIT_COMMITS = [
+      {
+        hash: "9596206",
+        date: "2026-10-05",
+        subject: "添加书架门户网站与双平台本地启动器并适配跨平台路径与字体",
+        signer: "Gemini 3.8 Flash"
+      },
+      {
+        hash: "e3d92c0",
+        date: "2026-10-04",
+        subject: "修复代码健壮性：静态书稿文本渲染统一转义、原书页码越界与保存失败增加提示、新增34章内容完整性测试",
+        signer: "glm-5.3-flash"
+      },
+      {
+        hash: "2bcb16e",
+        date: "2026-10-04",
+        subject: "初始化书中练习室独立项目，包含34章136个学习单元、15种工作台、存档兼容、测试及制作流程",
+        signer: "GPT 6.1 Sol"
+      }
+    ];
+
+    // Theme toggle handling
+    (function initTheme() {
+      const STORAGE_KEY = 'book-to-play:theme';
+      const root = document.documentElement;
+      const toggleBtn = document.querySelector('#btn-theme-toggle');
+      const iconEl = document.querySelector('#theme-icon');
+      const textEl = document.querySelector('#theme-text');
+
+      function setTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+        if (theme === 'light') {
+          iconEl.textContent = '🌙';
+          textEl.textContent = '深色';
+        } else {
+          iconEl.textContent = '☀️';
+          textEl.textContent = '浅色';
+        }
+      }
+
+      const savedTheme = localStorage.getItem(STORAGE_KEY) || 
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      setTheme(savedTheme);
+
+      toggleBtn.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') || 'dark';
+        setTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    })();
+
+    // Render Git Commits
+    (function renderGitHistory() {
+      const listEl = document.querySelector('#commit-list');
+      listEl.innerHTML = GIT_COMMITS.map(c => `
+        <div class="commit-item">
+          <div class="commit-top">
+            <span class="commit-hash">#${c.hash}</span>
+            <span class="commit-date">${c.date}</span>
+          </div>
+          <div class="commit-msg">${c.subject}</div>
+          <div class="commit-signer">✦ 提交模型：${c.signer}</div>
+        </div>
+      `).join('');
+    })();
+
     // Read local progress from Schell workbook
     (function initBookshelf() {
       const WORKBOOK_KEY = 'book-to-play:schell-2:workbook:v2';
