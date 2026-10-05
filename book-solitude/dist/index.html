@@ -25,6 +25,22 @@
       --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     }
 
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-card: #f1f5f9;
+      --border: #e2e8f0;
+      --ink: #0f172a;
+      --ink-dim: #475569;
+      --ink-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-purple-soft: rgba(147, 51, 234, 0.1);
+      --accent-gold: #d97706;
+      --accent-gold-soft: rgba(217, 119, 6, 0.12);
+      --accent-rose: #e11d48;
+      --accent-green: #16a34a;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -557,6 +573,10 @@
     </div>
 
     <div class="top-controls">
+      <button class="tool-btn" id="btn-theme-toggle" title="切换浅色纸张/深色模式">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-text">浅色</span>
+      </button>
       <button class="tool-btn" id="btn-open-lineage" title="展开布恩迪亚家族复杂谱系树">
         <span>🌳 家族谱系仓</span>
       </button>

@@ -256,6 +256,36 @@
   function initUI() {
     loadState();
 
+    // 主题切换（浅色/深色）
+    const themeBtn = document.getElementById('btn-theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      appState.theme = theme;
+      saveState();
+      if (themeIcon && themeText) {
+        if (theme === 'light') {
+          themeIcon.textContent = '🌙';
+          themeText.textContent = '深色';
+        } else {
+          themeIcon.textContent = '☀️';
+          themeText.textContent = '浅色';
+        }
+      }
+    }
+
+    const currentTheme = appState.theme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    applyTheme(currentTheme);
+
+    if (themeBtn) {
+      themeBtn.onclick = () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        applyTheme(next);
+      };
+    }
+
     // 字体缩放
     const incBtn = document.getElementById('btn-font-plus');
     const decBtn = document.getElementById('btn-font-minus');

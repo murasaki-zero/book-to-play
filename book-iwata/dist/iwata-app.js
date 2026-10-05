@@ -26,6 +26,11 @@ try {
   console.warn('读取本地阅读进度失败', e);
 }
 
+// Initial theme setup
+const initialTheme = store.theme || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+store.theme = initialTheme;
+document.documentElement.setAttribute('data-theme', initialTheme);
+
 function save() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
@@ -84,11 +89,16 @@ function render() {
         </nav>
 
         <div class="sidebar-foot">
-          <div class="font-resizer">
-            <span>字号</span>
-            <button class="btn-font" id="btn-font-dec" title="缩小正文字号">A-</button>
-            <span style="font-family:var(--font-mono); font-size:12px;">${store.fontSize}px</span>
-            <button class="btn-font" id="btn-font-inc" title="放大正文字号">A+</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <button class="btn-font" id="btn-theme-toggle" style="width:auto; padding:4px 10px; font-size:12px; gap:4px; display:inline-flex; align-items:center;">
+              <span id="theme-icon">${store.theme === 'light' ? '🌙' : '☀️'}</span>
+              <span id="theme-text">${store.theme === 'light' ? '深色' : '浅色'}</span>
+            </button>
+            <div class="font-resizer" style="margin:0;">
+              <button class="btn-font" id="btn-font-dec" title="缩小正文字号">A-</button>
+              <span style="font-family:var(--font-mono); font-size:12px;">${store.fontSize}px</span>
+              <button class="btn-font" id="btn-font-inc" title="放大正文字号">A+</button>
+            </div>
           </div>
           <div class="reading-stats">
             累计精读：${readSectionsCount} / ${totalSectionsCount} 节
@@ -426,6 +436,14 @@ function renderConsoleStrategyWidget() {
 }
 
 function bindEvents() {
+  // Theme Toggle
+  document.querySelector('#btn-theme-toggle')?.addEventListener('click', () => {
+    store.theme = store.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', store.theme);
+    save();
+    render();
+  });
+
   // Chapter Switch
   document.querySelector('#chapter-select')?.addEventListener('change', e => {
     store.currentChapter = Number(e.target.value);
