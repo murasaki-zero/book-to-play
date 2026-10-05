@@ -23,7 +23,7 @@ function runtimeFor(u, a) {
 }
 export function resetLabRuntime() { labRuntime.clear(); }
 function labButton(label, action, value='', extra='') { return `<button class="button secondary" data-lab="${action}" data-value="${labEscape(value)}" ${extra}>${label}</button>`; }
-function labField(a, name, label, placeholder='') { return `<label class="lab-field" for="lab-${name}">${label}<textarea id="lab-${name}" data-lab-field="${name}" placeholder="${labEscape(placeholder)}">${labEscape(a[name])}</textarea></label>`; }
+function labField(a, name, label, placeholder='') { return `<label class="lab-field" for="lab-${name}">${labEscape(label)}<textarea id="lab-${name}" data-lab-field="${name}" placeholder="${labEscape(placeholder)}">${labEscape(a[name])}</textarea></label>`; }
 function runList(a) { return (a.runs || []).length ? `<div class="run-log"><strong>已保存的实际尝试</strong>${a.runs.slice(-4).map(r=>`<p>${labEscape(r.summary)}</p>`).join('')}</div>` : '<p class="tiny">结束一轮后保存结果；尚未结束的这轮不会保存。</p>'; }
 function pulseBoard(u,a,r) {
   const mode = a.mode || 'changing', target = mode==='steady'?5:labSequence[r.hits%labSequence.length];
@@ -52,7 +52,7 @@ export function renderLab(u,a) {
   if(type==='forge') body=cardComposer(a,definitionCards,'chain',5)+labField(a,'definition','我的一句定义')+labField(a,'counterexample','一个边界例子，及它暴露的限制');
   if(type==='venues') {
     const v=Number.isInteger(a.venue)&&a.venue>=0&&a.venue<9?a.venue:0, card=venueCards[v];
-    body=`<div class="venue-map">${venueCards.map((c,i)=>`<button class="venue-card ${v===i?'selected':''}" data-lab="venue" data-value="${i}" aria-pressed="${v===i}"><span class="venue-symbol">${c[4]}</span><strong>${c[0]}</strong><small>${c[1]}场景</small></button>`).join('')}</div><div class="venue-detail"><div><span class="eyebrow">${card[1]}场景 · ${card[0]}</span><h4>${card[2]}</h4><p>${card[3]}</p></div><div class="venue-seen"><strong>${(a.visited||[]).length} / 9 已探索</strong><p>至少查看两个，再描述你会怎样改造同一个游戏。</p></div></div>`;
+    body=`<div class="venue-map">${venueCards.map((c,i)=>`<button class="venue-card ${v===i?'selected':''}" data-lab="venue" data-value="${i}" aria-pressed="${v===i}"><span class="venue-symbol">${labEscape(c[4])}</span><strong>${labEscape(c[0])}</strong><small>${labEscape(c[1])}场景</small></button>`).join('')}</div><div class="venue-detail"><div><span class="eyebrow">${labEscape(card[1])}场景 · ${labEscape(card[0])}</span><h4>${labEscape(card[2])}</h4><p>${labEscape(card[3])}</p></div><div class="venue-seen"><strong>${(a.visited||[]).length} / 9 已探索</strong><p>至少查看两个，再描述你会怎样改造同一个游戏。</p></div></div>`;
   }
   if(type==='twoPass') body+=labField(a,'firstFeeling','第 1 轮结束后：回忆我的感受')+labField(a,'secondFeeling','第 2 轮：停顿时注意到了什么？');
   if(type==='pulse') body+=labField(a,'feeling','我的感受（不代表其他玩家）','出现在哪一刻？可以是好奇、紧张、无聊或其他感受。');
