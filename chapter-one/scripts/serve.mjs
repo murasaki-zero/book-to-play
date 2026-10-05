@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { readFile, readdir, stat } from 'node:fs/promises';
+import { readFile, writeFile, readdir, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -10,6 +10,21 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 import os from 'node:os';
 import crypto from 'node:crypto';
 import { execSync } from 'node:child_process';
+
+async function getAccessConfig() {
+  const cfgPath = path.resolve(root, 'access-config.json');
+  try {
+    const data = await readFile(cfgPath, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return { publicAccessEnabled: true, updatedAt: new Date().toISOString() };
+  }
+}
+
+async function saveAccessConfig(cfg) {
+  const cfgPath = path.resolve(root, 'access-config.json');
+  await writeFile(cfgPath, JSON.stringify(cfg, null, 2) + '\n', 'utf-8');
+}
 
 function getLanIps() {
   const ips = [];
@@ -186,6 +201,53 @@ const server = http.createServer(async (req, res) => {
       const books = await scanBookDirectory();
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
       res.end(JSON.stringify({ total: books.length, books }));
+      return;
+    }
+
+    // API endpoint to get public access status
+    if (rawName === '/api/public-access-status') {
+      const cfg = await getAccessConfig();
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
+      res.end(JSON.stringify(cfg));
+      return;
+    }
+
+    // API endpoint to toggle public access (updates config and pushes to GitHub)
+    if (rawName === '/api/toggle-public-access' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const cfg = await getAccessConfig();
+          const nextState = !cfg.publicAccessEnabled;
+          cfg.publicAccessEnabled = nextState;
+          cfg.updatedAt = new Date().toISOString();
+          cfg.reason = nextState ? '手动开启外网访问' : '手动关闭外网访问（进入本地维护模式）';
+          await saveAccessConfig(cfg);
+
+          // Attempt git commit and push if git is available
+          let gitResult = { synced: false, message: '' };
+          try {
+            const commitMsg = `${nextState ? '开启' : '关闭'}外网访问模式，由 Gemini 3.8 Flash 提交`;
+            execSync(`git add access-config.json && git commit -m "${commitMsg}" && git push origin main`, {
+              cwd: root,
+              timeout: 15000,
+              encoding: 'utf-8'
+            });
+            gitResult.synced = true;
+            gitResult.message = '已成功同步至 GitHub 仓库并生效！';
+          } catch (gitErr) {
+            console.warn('Git 同步警告:', gitErr.message);
+            gitResult.message = '配置已在本地更新，但自动推送至 GitHub 超时或失败，可稍后手动推送。';
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: true, config: cfg, git: gitResult }));
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
       return;
     }
 

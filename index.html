@@ -8,8 +8,9 @@
   <title>书中练习室 · 我的书架</title>
   <link rel="icon" type="image/svg+xml" href="chapter-one/dist/assets/favicon.svg">
   <script>
-    // Execute synchronously in head to prevent any layout flash of game books on GitHub Pages
-    if (window.location.hostname.endsWith('github.io')) {
+    // Synchronously evaluate cloud hosting mode & maintenance mode
+    const isGH = window.location.hostname.endsWith('github.io');
+    if (isGH) {
       document.documentElement.classList.add('gh-pages-mode');
     }
   </script>
@@ -24,6 +25,16 @@
     }
     .gh-pages-mode .shelf-intro .tagline {
       display: inline-flex;
+    }
+
+    /* Maintenance mode for public access */
+    .public-disabled-mode .shelf-container,
+    .public-disabled-mode .header-controls,
+    .public-disabled-mode .shelf-footer {
+      display: none !important;
+    }
+    .public-disabled-mode #public-lockdown-banner {
+      display: flex !important;
     }
     :root {
       /* Dark Theme */
@@ -763,6 +774,12 @@
         </div>
       </div>
 
+      <!-- Public Access Toggle Button (Local Only) -->
+      <button class="btn-icon-nav" id="btn-toggle-public-access" onclick="togglePublicAccess()" title="一键开启或关闭 GitHub Pages 外网访问" style="border-color: rgba(56, 189, 248, 0.4);">
+        <span id="public-access-icon">🌐</span>
+        <span id="public-access-text">外网访问: 检测中</span>
+      </button>
+
       <!-- LAN Access for iPad/Mobile Button -->
       <button class="btn-icon-nav" id="btn-show-lan" onclick="openLanDialog()" title="在局域网内用 iPad / 手机访问">
         <span>📱</span>
@@ -782,6 +799,21 @@
       </button>
     </div>
   </header>
+
+  <!-- Public Lockdown Banner (Shown on GitHub Pages when access is disabled) -->
+  <div id="public-lockdown-banner" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:90px 24px; text-align:center; min-height:60vh;">
+    <div style="width:72px; height:72px; border-radius:50%; background:rgba(239,68,68,0.15); border:1.5px solid rgba(239,68,68,0.4); display:grid; place-items:center; font-size:34px; margin-bottom:20px; color:#f87171;">
+      🔒
+    </div>
+    <h2 style="font-family:var(--font-serif); font-size:28px; color:var(--ink); margin-bottom:12px;">练习室外网访问已暂停</h2>
+    <p style="font-size:15px; color:var(--ink-dim); max-width:520px; line-height:1.8; margin-bottom:24px;">
+      当前练习室已被作者设置为<strong>本地离线研读模式</strong>，外网公共访问暂时关闭。<br>
+      如需学习与体验，请在主人本地电脑终端启动运行。
+    </p>
+    <div style="font-family:var(--font-mono); font-size:12px; color:var(--ink-muted); background:var(--bg-panel); border:1px solid var(--card-border); padding:8px 16px; border-radius:6px;">
+      Status: Offline Maintenance · Controlled by Local Studio
+    </div>
+  </div>
 
   <!-- Main Bookshelf Canvas -->
   <main class="shelf-container">
@@ -1421,12 +1453,30 @@
       `).join('');
     })();
 
-    // Dynamic Filter: Hide game books when deployed on GitHub Pages (Public view)
-    (function filterGameBooksOnGitHub() {
+    // Dynamic Filter & Access Control
+    let currentAccessConfig = { publicAccessEnabled: true };
+
+    async function checkPublicAccessControl() {
       const isGitHub = window.location.hostname.endsWith('github.io');
+      const toggleBtn = document.querySelector('#btn-toggle-public-access');
+      const toggleIcon = document.querySelector('#public-access-icon');
+      const toggleText = document.querySelector('#public-access-text');
+
+      // 1. If running on GitHub Pages (Public Cloud)
       if (isGitHub) {
+        if (toggleBtn) toggleBtn.style.display = 'none'; // Not toggled from public cloud
+        try {
+          const res = await fetch('access-config.json?t=' + Date.now());
+          if (res.ok) {
+            const cfg = await res.json();
+            if (cfg.publicAccessEnabled === false) {
+              document.documentElement.classList.add('public-disabled-mode');
+              return;
+            }
+          }
+        } catch (_) {}
+        // Normal public view: filter out game books
         document.documentElement.classList.add('gh-pages-mode');
-        // Inject style to cleanly hide game elements and re-label sections
         const style = document.createElement('style');
         style.textContent = `
           .gh-pages-mode .category-game { display: none !important; }
@@ -1435,13 +1485,83 @@
         `;
         document.head.appendChild(style);
 
-        // Update shelf title on GitHub Pages
         const section2Title = document.querySelector('#shelf-books-grid-2')?.previousElementSibling;
         if (section2Title) {
           section2Title.textContent = '01 · 正在研读与文学社科精读';
         }
+        return;
       }
-    })();
+
+      // 2. Local Environment: Fetch status from server or static json
+      try {
+        const res = await fetch('/api/public-access-status');
+        if (res.ok) {
+          currentAccessConfig = await res.json();
+        } else {
+          const fileRes = await fetch('access-config.json');
+          if (fileRes.ok) currentAccessConfig = await fileRes.json();
+        }
+      } catch (_) {
+        try {
+          const fileRes = await fetch('access-config.json');
+          if (fileRes.ok) currentAccessConfig = await fileRes.json();
+        } catch (_) {}
+      }
+
+      updatePublicAccessUI();
+    }
+
+    function updatePublicAccessUI() {
+      const toggleIcon = document.querySelector('#public-access-icon');
+      const toggleText = document.querySelector('#public-access-text');
+      const toggleBtn = document.querySelector('#btn-toggle-public-access');
+      if (!toggleBtn) return;
+
+      if (currentAccessConfig.publicAccessEnabled) {
+        toggleIcon.textContent = '🌐';
+        toggleText.textContent = '外网访问: 已开启';
+        toggleBtn.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+        toggleBtn.style.color = 'var(--accent-cyan)';
+      } else {
+        toggleIcon.textContent = '🔒';
+        toggleText.textContent = '外网访问: 已关闭';
+        toggleBtn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        toggleBtn.style.color = '#f87171';
+      }
+    }
+
+    async function togglePublicAccess() {
+      const nextState = !currentAccessConfig.publicAccessEnabled;
+      const confirmMsg = nextState
+        ? '确定要【开启】GitHub Pages 外网访问吗？开启后外部访客可阅读文学与传记精读室。'
+        : '确定要【关闭】GitHub Pages 外网访问吗？关闭后外网访客将看到闭门维护提示，无法访问内容。';
+      
+      if (!confirm(confirmMsg)) return;
+
+      const toggleBtn = document.querySelector('#btn-toggle-public-access');
+      const toggleText = document.querySelector('#public-access-text');
+      toggleText.textContent = '正在同步至 GitHub...';
+      toggleBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/toggle-public-access', { method: 'POST' });
+        if (res.ok) {
+          const result = await res.json();
+          currentAccessConfig = result.config;
+          updatePublicAccessUI();
+          showToast(nextState ? '外网访问已成功开启并同步！' : '外网访问已成功关闭并同步！');
+        } else {
+          showToast('切换失败，请确认本地服务运行中');
+        }
+      } catch (err) {
+        showToast('请求失败，请确保本地已运行 npm run serve');
+      } finally {
+        toggleBtn.disabled = false;
+        updatePublicAccessUI();
+      }
+    }
+
+    checkPublicAccessControl();
 
     // Read local progress from Schell workbook
     (function initBookshelf() {
