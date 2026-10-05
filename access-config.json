@@ -1,5 +1,5 @@
 {
-  "publicAccessEnabled": true,
-  "updatedAt": "2026-10-05T19:46:00.000Z",
-  "reason": "正常开放文学与传记精读室"
+  "publicAccessEnabled": false,
+  "updatedAt": "2026-10-05T13:54:43.365Z",
+  "reason": "手动关闭外网访问（进入本地维护模式）"
 }
