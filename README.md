@@ -9,7 +9,7 @@
 </p>
 
 > **读书不只是翻页，更是一场亲手搭建的思维实验。**  
-> 「书中练习室」是一个专注于将经典书籍（设计方法论、人物传记回忆录、文学社科巨著）深度转化为**可互动、可观察、可推演、可精读**的现代化本地/在线学习平台。
+> 「书中练习室」是一个专注于将经典书籍（人物传记回忆录、文学社科巨著）深度转化为**可互动、可观察、可推演、可精读**的现代化本地/在线学习平台。
 
 ---
 
@@ -80,18 +80,9 @@ npm run serve
 ```text
 book-to-play/
 ├── index.html                   # 门户主页：跨书籍书架、局域网指示器与动态开工看板
-├── 制作工作流.md                 # 方法论与理论类书籍制作标准规范
 ├── 传记类制作工作流.md           # 人物传记类情境推演制作标准规范
 ├── 文学类制作工作流.md           # 文学社科类时代映射精读制作标准规范
 ├── AGENTS.md                    # AI Pair Programming 行为准则与自动化规范
-│
-├── chapter-one/                 # 🎲《游戏设计艺术》主工程
-│   ├── dist/
-│   │   ├── 开始学习.html         # 单文件离线自包含主应用 (136 单元 + 15 种沙盒)
-│   │   ├── bookshelf.html       # 模块化开发者书架视图
-│   │   └── ...                  # 模块化源文件 (app.js, labs.js, workbook.js)
-│   ├── scripts/serve.mjs        # 本地轻量原生 HTTP 服务 (支持 Book/ 动态扫描)
-│   └── tests/                   # 26 项规则逻辑、存档迁移与完整性测试
 │
 ├── book-iwata/                  # 📖《岩田先生》传记工程
 │   ├── dist/
@@ -122,11 +113,11 @@ book-to-play/
 
 ## 🧪 自动化测试套件
 
-项目内置轻量严谨的 Node.js 原生测试套件，全面保障长文排版、沙盒算法与存档兼容性：
+项目内置轻量严谨的 Node.js 原生测试套件，全面保障长文排版、决策沙盒算法与谱系映射完备性：
 
 ```sh
-# 运行全部 39 项自动化回归测试
-npm --prefix chapter-one run check && npm --prefix book-iwata run check && npm --prefix book-solitude run check
+# 运行自动化回归测试
+npm --prefix book-iwata run check && npm --prefix book-solitude run check
 ```
 
 ---

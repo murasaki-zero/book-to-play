@@ -7,7 +7,24 @@
   <meta name="description" content="书中练习室 · 互动书籍书架：把好书改造成属于你的互动练习室。">
   <title>书中练习室 · 我的书架</title>
   <link rel="icon" type="image/svg+xml" href="chapter-one/dist/assets/favicon.svg">
+  <script>
+    // Execute synchronously in head to prevent any layout flash of game books on GitHub Pages
+    if (window.location.hostname.endsWith('github.io')) {
+      document.documentElement.classList.add('gh-pages-mode');
+    }
+  </script>
   <style>
+    /* Instant CSS rule active from first byte */
+    .gh-pages-mode .category-game,
+    .gh-pages-mode .shelf-section-game,
+    .gh-pages-mode #card-schell,
+    .gh-pages-mode #card-levelup,
+    .gh-pages-mode #card-tips236 {
+      display: none !important;
+    }
+    .gh-pages-mode .shelf-intro .tagline {
+      display: inline-flex;
+    }
     :root {
       /* Dark Theme */
       --bg: #10151c;
