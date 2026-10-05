@@ -1,14 +1,4 @@
-/**
- * 《百年孤独》前七章结构化原文数据
- */
-(function(root, factory) {
-  if (typeof module === "object" && module.exports) {
-    module.exports = factory();
-  } else {
-    root.SolitudeChapters = factory();
-  }
-})(typeof self !== "undefined" ? self : this, function() {
-  return [
+[
   {
     "id": 1,
     "file": "text/part0003.html",
@@ -390,5 +380,4 @@
     ],
     "paragraph_count": 58
   }
-];
-});
+]

@@ -78,7 +78,7 @@ function parseBookMeta(filename, stats) {
     title = '百年孤独';
     projectUrl = 'book-solitude/dist/开始精读.html';
     cover = 'chapter-one/dist/assets/covers/cache/cover-d726670f7a69.jpg';
-    spec = { chapters: 3, units: 121, tag: '时代精读' };
+    spec = { chapters: 7, units: 306, tag: '时代精读' };
   } else if (title.includes('通关！游戏设计之道') || title.includes('通关')) {
     status = 'plan';
     title = '通关！游戏设计之道（第 2 版）';
