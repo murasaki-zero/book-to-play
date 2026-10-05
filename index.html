@@ -775,12 +775,12 @@
     </section>
 
     <!-- First Shelf Rack: Core Game Design Books -->
-    <section class="shelf-section">
+    <section class="shelf-section shelf-section-game">
       <div class="shelf-section-title">01 · 正在研读与交互学习</div>
 
       <div class="books-grid">
         <!-- Book 1: The Art of Game Design (2nd Edition) -->
-        <article class="book-card" id="card-schell">
+        <article class="book-card category-game" id="card-schell">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="chapter-one/dist/assets/covers/schell-art-of-game-design.jpg" alt="游戏设计艺术封面" onerror="this.style.display='none'">
@@ -837,7 +837,7 @@
         </article>
 
         <!-- Book 2: Level Up! (Scott Rogers) -->
-        <article class="book-card" id="card-levelup">
+        <article class="book-card category-game" id="card-levelup">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="chapter-one/dist/assets/covers/level-up-rogers.jpg" alt="通关！游戏设计之道封面">
@@ -900,7 +900,7 @@
 
       <div class="books-grid" id="shelf-books-grid-2">
         <!-- Book 3: 236 Game Design Tips -->
-        <article class="book-card" id="card-tips236">
+        <article class="book-card category-game" id="card-tips236">
           <div class="book-showcase">
             <div class="book-cover-wrap">
               <img src="chapter-one/dist/assets/covers/game-design-236-tips.jpg" alt="游戏设计的236个技巧封面">
@@ -1402,6 +1402,28 @@
           <div class="commit-signer">✦ 提交模型：${c.signer}</div>
         </div>
       `).join('');
+    })();
+
+    // Dynamic Filter: Hide game books when deployed on GitHub Pages (Public view)
+    (function filterGameBooksOnGitHub() {
+      const isGitHub = window.location.hostname.endsWith('github.io');
+      if (isGitHub) {
+        document.documentElement.classList.add('gh-pages-mode');
+        // Inject style to cleanly hide game elements and re-label sections
+        const style = document.createElement('style');
+        style.textContent = `
+          .gh-pages-mode .category-game { display: none !important; }
+          .gh-pages-mode .shelf-section-game { display: none !important; }
+          .gh-pages-mode .shelf-intro .tagline { content: '✦ 经典传记回忆录与文学社科深度精读'; }
+        `;
+        document.head.appendChild(style);
+
+        // Update shelf title on GitHub Pages
+        const section2Title = document.querySelector('#shelf-books-grid-2')?.previousElementSibling;
+        if (section2Title) {
+          section2Title.textContent = '01 · 正在研读与文学社科精读';
+        }
+      }
     })();
 
     // Read local progress from Schell workbook
