@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#121820">
   <meta name="description" content="书中练习室 · 互动书籍书架：把好书改造成属于你的互动练习室。">
   <title>书中练习室 · 我的书架</title>
-  <link rel="icon" type="image/svg+xml" href="/chapter-one/dist/assets/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="chapter-one/dist/assets/favicon.svg">
   <style>
     :root {
       /* Dark Theme */
@@ -825,11 +825,11 @@
             </div>
 
             <div class="btn-action-group">
-              <a href="/chapter-one/dist/开始学习.html" class="btn-enter" id="btn-enter-schell">
+              <a href="chapter-one/dist/开始学习.html" class="btn-enter" id="btn-enter-schell">
                 <span>进入练习室</span>
                 <span style="font-size:16px;">➔</span>
               </a>
-              <a href="/chapter-one/dist/index.html" class="btn-sub" title="开发者模块化视图">
+              <a href="chapter-one/dist/index.html" class="btn-sub" title="开发者模块化视图">
                 模块视图
               </a>
             </div>
@@ -998,11 +998,11 @@
             </div>
 
             <div class="btn-action-group">
-              <a href="/book-iwata/dist/开始思辨.html" class="btn-enter" id="btn-enter-iwata" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); border-color: rgba(74, 222, 128, 0.4);">
+              <a href="book-iwata/dist/开始思辨.html" class="btn-enter" id="btn-enter-iwata" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); border-color: rgba(74, 222, 128, 0.4);">
                 <span>进入思辨室</span>
                 <span style="font-size:16px;">➔</span>
               </a>
-              <a href="/book-iwata/dist/index.html" class="btn-sub" title="开发者模块化视图">
+              <a href="book-iwata/dist/index.html" class="btn-sub" title="开发者模块化视图">
                 模块视图
               </a>
             </div>
@@ -1013,7 +1013,7 @@
         <article class="book-card" id="card-solitude">
           <div class="book-showcase">
             <div class="book-cover-wrap">
-              <img src="/chapter-one/dist/assets/covers/cache/cover-d726670f7a69.jpg" alt="百年孤独封面" onerror="this.parentElement.innerHTML='<div style=\'font-size:36px; display:grid; place-items:center; width:100%; height:100%;\'>🏛️</div>'">
+              <img src="chapter-one/dist/assets/covers/cache/cover-d726670f7a69.jpg" alt="百年孤独封面" onerror="this.parentElement.innerHTML='<div style=\'font-size:36px; display:grid; place-items:center; width:100%; height:100%;\'>🏛️</div>'">
             </div>
 
             <div class="book-details">
@@ -1055,11 +1055,11 @@
             </div>
 
             <div class="btn-action-group">
-              <a href="/book-solitude/dist/开始精读.html" class="btn-enter" id="btn-enter-solitude" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); border-color: rgba(192, 132, 252, 0.4);">
+              <a href="book-solitude/dist/开始精读.html" class="btn-enter" id="btn-enter-solitude" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); border-color: rgba(192, 132, 252, 0.4);">
                 <span>进入精读室</span>
                 <span style="font-size:16px;">➔</span>
               </a>
-              <a href="/book-solitude/dist/index.html" class="btn-sub" title="开发者模块化视图">
+              <a href="book-solitude/dist/index.html" class="btn-sub" title="开发者模块化视图">
                 模块视图
               </a>
             </div>
@@ -1595,6 +1595,28 @@
       const text = document.querySelector('#lan-status-text');
       const stopBtn = document.querySelector('#btn-lan-stop');
       const container = document.querySelector('#lan-urls-container');
+
+      // GitHub Pages Cloud Hosting Detection
+      if (window.location.hostname.endsWith('github.io')) {
+        dot.style.background = '#38bdf8';
+        text.textContent = '☁️ GitHub Pages 云端托管模式 (全球 CDN 加速)';
+        text.style.color = '#38bdf8';
+        stopBtn.style.display = 'none';
+
+        const cloudUrl = window.location.href;
+        container.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel-sub); border:1px solid rgba(56,189,248,0.3); padding:12px 14px; border-radius:8px; gap:12px;">
+            <div>
+              <div style="font-family:var(--font-mono); font-size:15px; font-weight:600; color:#38bdf8; word-break:break-all;">${cloudUrl}</div>
+              <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">全球可直接访问 · 无需本地电脑开机</div>
+            </div>
+            <button onclick="navigator.clipboard.writeText('${cloudUrl}').then(() => showToast('已复制外网网址！'))" style="background:var(--bg); border:1px solid var(--accent-blue); color:var(--accent-blue); padding:7px 14px; border-radius:6px; font-size:12.5px; cursor:pointer; white-space:nowrap; font-weight:500;">
+              复制网址
+            </button>
+          </div>
+        `;
+        return;
+      }
 
       dot.style.background = '#94a3b8';
       text.textContent = '正在探测局域网服务……';

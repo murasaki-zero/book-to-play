@@ -1596,6 +1596,28 @@
       const stopBtn = document.querySelector('#btn-lan-stop');
       const container = document.querySelector('#lan-urls-container');
 
+      // GitHub Pages Cloud Hosting Detection
+      if (window.location.hostname.endsWith('github.io')) {
+        dot.style.background = '#38bdf8';
+        text.textContent = '☁️ GitHub Pages 云端托管模式 (全球 CDN 加速)';
+        text.style.color = '#38bdf8';
+        stopBtn.style.display = 'none';
+
+        const cloudUrl = window.location.href;
+        container.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-panel-sub); border:1px solid rgba(56,189,248,0.3); padding:12px 14px; border-radius:8px; gap:12px;">
+            <div>
+              <div style="font-family:var(--font-mono); font-size:15px; font-weight:600; color:#38bdf8; word-break:break-all;">${cloudUrl}</div>
+              <div style="font-size:11px; color:var(--ink-muted); margin-top:2px;">全球可直接访问 · 无需本地电脑开机</div>
+            </div>
+            <button onclick="navigator.clipboard.writeText('${cloudUrl}').then(() => showToast('已复制外网网址！'))" style="background:var(--bg); border:1px solid var(--accent-blue); color:var(--accent-blue); padding:7px 14px; border-radius:6px; font-size:12.5px; cursor:pointer; white-space:nowrap; font-weight:500;">
+              复制网址
+            </button>
+          </div>
+        `;
+        return;
+      }
+
       dot.style.background = '#94a3b8';
       text.textContent = '正在探测局域网服务……';
       text.style.color = 'var(--ink)';
